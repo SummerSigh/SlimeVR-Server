@@ -39,12 +39,18 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getManufacturer())
 			: 0;
 
+		int firmwareDateOffset = device.getFirmwareDate() != null
+			? fbb.createString(device.getFirmwareDate())
+			: 0;
+
 		int hardwareIdentifierOffset = fbb.createString(device.getHardwareIdentifier());
 
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
 		HardwareInfo.addHardwareIdentifier(fbb, hardwareIdentifierOffset);
+
+		HardwareInfo.addFirmwareDate(fbb, firmwareDateOffset);
 
 		if (device instanceof UDPDevice udpDevice) {
 			var address = udpDevice.getIpAddress().getAddress();
@@ -68,6 +74,7 @@ public class DataFeedBuilder {
 
 		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
 		HardwareInfo.addOfficialBoardType(fbb, device.getBoardType().getSolarType());
+
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -141,7 +148,7 @@ public class DataFeedBuilder {
 			TrackerInfo.addAllowDriftCompensation(fbb, false);
 		}
 
-		if (tracker.getNeedsMounting()) {
+		if (tracker.getAllowMounting()) {
 			Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();
 			Quaternion mountResetFix = tracker.getResetsHandler().getMountRotFix();
 			TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
@@ -215,7 +222,7 @@ public class DataFeedBuilder {
 			if (trackerTemperatureOffset != 0)
 				TrackerData.addTemp(fbb, trackerTemperatureOffset);
 		}
-		if (tracker.getNeedsMounting() && tracker.getHasRotation()) {
+		if (tracker.getAllowMounting() && tracker.getHasRotation()) {
 			if (mask.getRotationReferenceAdjusted()) {
 				TrackerData
 					.addRotationReferenceAdjusted(fbb, createQuat(fbb, tracker.getRotation()));
@@ -227,7 +234,7 @@ public class DataFeedBuilder {
 						createQuat(fbb, tracker.getIdentityAdjustedRotation())
 					);
 			}
-		} else if (tracker.getNeedsReset() && tracker.getHasRotation()) {
+		} else if (tracker.getAllowReset() && tracker.getHasRotation()) {
 			if (mask.getRotationReferenceAdjusted()) {
 				TrackerData
 					.addRotationReferenceAdjusted(fbb, createQuat(fbb, tracker.getRotation()));
@@ -310,6 +317,9 @@ public class DataFeedBuilder {
 			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength().floatValue());
 		}
 
+		if (tracker.getBatteryRemainingRuntime() != null) {
+			HardwareStatus.addBatteryRuntimeEstimate(fbb, tracker.getBatteryRemainingRuntime());
+		}
 
 		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);

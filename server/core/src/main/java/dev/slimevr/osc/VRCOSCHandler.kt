@@ -275,7 +275,7 @@ class VRCOSCHandler(
 					hasPosition = true,
 					userEditable = true,
 					isComputed = true,
-					needsReset = trackerPosition != TrackerPosition.HEAD,
+					allowReset = trackerPosition != TrackerPosition.HEAD,
 					usesTimeout = true,
 				)
 				vrsystemTrackersDevice!!.trackers[trackerPosition.ordinal] = tracker
@@ -368,7 +368,7 @@ class VRCOSCHandler(
 						hasPosition = true,
 						userEditable = true,
 						isComputed = true,
-						needsReset = true,
+						allowReset = true,
 						usesTimeout = true,
 					)
 					oscTrackersDevice!!.trackers[trackerId] = tracker
@@ -385,8 +385,10 @@ class VRCOSCHandler(
 							event.message.arguments[0] as Float,
 							event.message.arguments[1] as Float,
 							-(event.message.arguments[2] as Float),
-						) - receivingPositionOffset,
-					) + postReceivingPositionOffset
+						) -
+							receivingPositionOffset,
+					) +
+						postReceivingPositionOffset
 				} else {
 					// Update tracker rotation
 					val (w, x, y, z) = EulerAngles(

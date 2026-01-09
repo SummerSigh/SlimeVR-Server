@@ -21,6 +21,9 @@ version_update-close = Kapat
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
 tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Atanmamış
@@ -44,6 +47,9 @@ body_part-LEFT_HAND = Sol el
 body_part-LEFT_UPPER_LEG = Sol uyluk
 body_part-LEFT_LOWER_LEG = Sol ayak bileği
 body_part-LEFT_FOOT = Sol ayak
+
+## BoardType
+
 
 ## Proportions
 
@@ -108,6 +114,9 @@ tracking-unpaused = Takibi duraklat
 ## Widget: Drift compensation
 
 
+## Widget: Clear Mounting calibration
+
+
 ## Widget: Developer settings
 
 widget-developer_mode = Geliştirici Modu
@@ -120,7 +129,9 @@ widget-developer_mode-more_info = Daha fazla bilgi
 
 widget-imu_visualizer = Rotasyon
 widget-imu_visualizer-rotation_preview = Önizle
-widget-imu_visualizer-rotation_hide = Gizle
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -222,10 +233,6 @@ settings-general-steamvr = SteamVR
 settings-general-steamvr-subtitle = SteamVR takipçileri
 settings-general-steamvr-trackers-waist = Bel
 settings-general-steamvr-trackers-chest = Göğüs
-settings-general-steamvr-trackers-feet = Ayaklar
-settings-general-steamvr-trackers-knees = Dizler
-settings-general-steamvr-trackers-elbows = Dirsekler
-settings-general-steamvr-trackers-hands = Eller
 
 ## Tracker mechanics
 
@@ -235,18 +242,18 @@ settings-general-tracker_mechanics-filtering-amount = Miktar
 
 settings-general-fk_settings-leg_fk = Bacak takibi
 settings-general-fk_settings-arm_fk = Kol takibi
-settings-general-fk_settings-skeleton_settings = İskelet ayarları
 settings-general-fk_settings-skeleton_settings-description = İskelet ayarlarını açın veya kapatın. Bunları açık bırakmanız önerilir.
-settings-general-fk_settings-skeleton_settings-extended_spine = Uzatılmış omurga
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Uzatılmış pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Uzatılmış diz
-settings-general-fk_settings-vive_emulation-title = Vive emülasyonu
-settings-general-fk_settings-vive_emulation-label = Vive emülasyonunu etkinleştir
 
 ## Gesture control settings (tracker tapping)
 
 
-## Interface settings
+## Appearance settings
+
+
+## Notification settings
+
+
+## Behavior settings
 
 
 ## Serial settings
@@ -271,6 +278,18 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## VMC OSC settings
 
 
+## Common OSC settings
+
+
+## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 
@@ -281,9 +300,6 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -313,17 +329,53 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Tracker automatic mounting setup
 
 
-## Tracker proportions method choose
-
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 
 ## Tracker automatic proportions setup
 
 
+## User height calibration
+
+
+## Stay Aligned setup
+
+
 ## Home
 
 
+## Trackers Still On notification
+
+
 ## Status system
+
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
+
+## Error collection consent modal
+
+
+## Tracking checklist section
 

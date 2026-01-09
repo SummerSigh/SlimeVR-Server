@@ -1,6 +1,6 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { IPv4 } from 'ip-num/IPNumber';
+import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -36,10 +36,10 @@ import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
-import semver from 'semver';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
+import { Tooltip } from '@/components/commons/Tooltip';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -170,11 +170,7 @@ export function TrackerSettingsPage() {
     currentFirmwareRelease &&
     tracker?.device?.hardwareInfo &&
     checkForUpdate(currentFirmwareRelease, tracker?.device);
-  const updateUnavailable =
-    tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
-    !semver.valid(
-      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
-    );
+  const updateUnavailable = needUpdate === null;
 
   return (
     <form
@@ -185,14 +181,14 @@ export function TrackerSettingsPage() {
         isOpen={selectBodypart}
         onClose={() => setSelectBodypart(false)}
         onRoleSelected={onRoleSelected}
-      ></SingleTrackerBodyAssignmentMenu>
+      />
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
         currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
-      ></MountingSelectionMenu>
+      />
       <div className="flex gap-2 max-md:flex-wrap md:flex-row xs:flex-col mobile:flex-col">
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
@@ -201,78 +197,103 @@ export function TrackerSettingsPage() {
               device={tracker?.device}
               tracker={tracker?.tracker}
               shakeHighlight={false}
-            ></TrackerCard>
+            />
           )}
           {
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
-              <Localized id="tracker-settings-update-title">
-                <Typography variant="section-title">
-                  Firmware version
-                </Typography>
-              </Localized>
-              <div className="flex gap-2">
-                <Typography color="secondary">
-                  v{tracker?.device?.hardwareInfo?.firmwareVersion}
-                </Typography>
-                <Typography color="secondary">-</Typography>
-                {updateUnavailable && (
-                  <Localized id="tracker-settings-update-unavailable">
-                    <Typography>Cannot be updated (DIY)</Typography>
-                  </Localized>
-                )}
-                {!updateUnavailable && (
-                  <>
-                    {needUpdate === 'blocked' && (
-                      // This happens only if no update is available and or the user is not in the current stagged
-                      <Localized id="tracker-settings-update-blocked">
-                        <Typography>
-                          Update not available. No other releases available
+              <Typography
+                variant="section-title"
+                id="tracker-settings-update-title"
+              >
+                Firmware version
+              </Typography>
+              <div className="flex gap-2 flex-col">
+                <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-build-date" />
+                  <Typography
+                    whitespace="whitespace-pre-wrap"
+                    textAlign="text-end"
+                  >
+                    {tracker?.device?.hardwareInfo?.firmwareDate || '--'}
+                  </Typography>
+                </div>
+                <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-current-version" />
+                  <Typography
+                    whitespace="whitespace-pre-wrap"
+                    textAlign="text-end"
+                  >
+                    v{tracker?.device?.hardwareInfo?.firmwareVersion}
+                  </Typography>
+                </div>
+                <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-latest-version" />
+                  {!updateUnavailable && (
+                    <>
+                      {currentFirmwareRelease && (
+                        <Typography
+                          color={
+                            needUpdate === 'updated'
+                              ? undefined
+                              : 'text-accent-background-10'
+                          }
+                          textAlign="text-end"
+                          whitespace="whitespace-pre-wrap"
+                        >
+                          {currentFirmwareRelease.name}
                         </Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'updated' && (
-                      <Localized id="tracker-settings-update-up_to_date">
-                        <Typography>Up to date</Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'can-update' && currentFirmwareRelease && (
-                      <Localized
-                        id="tracker-settings-update-available"
-                        vars={{ versionName: currentFirmwareRelease.name }}
-                      >
-                        <Typography color="text-accent-background-10">
-                          New version available
-                        </Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'low-battery' && currentFirmwareRelease && (
-                      <Localized
-                        id="tracker-settings-update-low-battery"
-                        vars={{ versionName: currentFirmwareRelease.name }}
-                      >
-                        <Typography color="text-status-critical"></Typography>
-                      </Localized>
-                    )}
-                  </>
-                )}
+                      )}
+                    </>
+                  )}
+                  {updateUnavailable && (
+                    <Typography id="tracker-settings-update-unavailable-v2">
+                      No releases found
+                    </Typography>
+                  )}
+                </div>
               </div>
-              <Localized id="tracker-settings-update">
-                <Button
-                  variant={
-                    needUpdate === 'can-update' ? 'primary' : 'secondary'
+              {!updateUnavailable && (
+                <Tooltip
+                  preferedDirection="top"
+                  disabled={
+                    needUpdate === 'can-update' || needUpdate === 'updated'
                   }
-                  disabled={needUpdate !== 'can-update'}
-                  to="/firmware-update"
+                  content={
+                    <>
+                      {needUpdate === 'unavailable' && (
+                        <Typography id="tracker-settings-update-incompatible" />
+                      )}
+                      {needUpdate === 'blocked' && (
+                        // This happens only if no update is available and or the user is not in the current stagged
+                        <Typography id="tracker-settings-update-blocked" />
+                      )}
+                      {needUpdate === 'low-battery' &&
+                        currentFirmwareRelease && (
+                          <Typography id="tracker-settings-update-low-battery" />
+                        )}
+                    </>
+                  }
                 >
-                  Update now
-                </Button>
-              </Localized>
+                  <Button
+                    variant={
+                      needUpdate === 'can-update' ? 'primary' : 'secondary'
+                    }
+                    disabled={needUpdate !== 'can-update'}
+                    to="/firmware-update"
+                    id={
+                      needUpdate === 'updated'
+                        ? 'tracker-settings-update-up_to_date'
+                        : 'tracker-settings-update'
+                    }
+                  />
+                </Tooltip>
+              )}
             </div>
           }
 
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-manufacturer')}
               </Typography>
               <Typography>
@@ -280,13 +301,13 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-display_name')}
               </Typography>
               <Typography>{tracker?.tracker.info?.displayName}</Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-custom_name')}
               </Typography>
               <Typography sentry-mask>
@@ -294,9 +315,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
-                {l10n.getString('tracker-infos-url')}
-              </Typography>
+              <Typography>{l10n.getString('tracker-infos-url')}</Typography>
               <Typography>
                 udp://
                 {IPv4.fromNumber(
@@ -305,7 +324,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-hardware_identifier')}
               </Typography>
               <Typography>
@@ -313,7 +332,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-data_support')}
               </Typography>
               <Typography>
@@ -323,9 +342,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
-                {l10n.getString('tracker-infos-imu')}
-              </Typography>
+              <Typography>{l10n.getString('tracker-infos-imu')}</Typography>
               <Typography>
                 {tracker?.tracker.info?.imuType
                   ? ImuType[tracker?.tracker.info?.imuType]
@@ -333,13 +350,13 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
               <Typography>{boardType}</Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-magnetometer')}
               </Typography>
               <Typography>
@@ -352,7 +369,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-network_version')}
               </Typography>
               <Typography>
@@ -361,9 +378,7 @@ export function TrackerSettingsPage() {
             </div>
           </div>
           {tracker?.tracker && (
-            <IMUVisualizerWidget
-              tracker={tracker?.tracker}
-            ></IMUVisualizerWidget>
+            <IMUVisualizerWidget tracker={tracker?.tracker} />
           )}
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
@@ -377,7 +392,7 @@ export function TrackerSettingsPage() {
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-assignment_section')}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'tracker-settings-assignment_section-description'
               )}
@@ -385,9 +400,7 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center fill-background-10">
                 {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
-                  <BodyPartIcon
-                    bodyPart={tracker?.tracker.info?.bodyPart}
-                  ></BodyPartIcon>
+                  <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
                 )}
                 {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
                   <WarningIcon className="fill-status-warning" />
@@ -419,14 +432,14 @@ export function TrackerSettingsPage() {
               <Typography variant="section-title">
                 {l10n.getString('tracker-settings-mounting_section')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'tracker-settings-mounting_section-description'
                 )}
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
                 <div className="flex gap-3 items-center">
-                  <BodyPartIcon bodyPart={BodyPart.NONE}></BodyPartIcon>
+                  <BodyPartIcon bodyPart={BodyPart.NONE} />
                   <Typography>
                     {l10n.getString(
                       (rotationsLabels.find((q) =>
@@ -468,7 +481,7 @@ export function TrackerSettingsPage() {
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString('tracker-settings-name_section-description')}
             </Typography>
             <Input
@@ -481,14 +494,14 @@ export function TrackerSettingsPage() {
               autocomplete="off"
               rules={undefined}
               label={l10n.getString('tracker-settings-name_section-label')}
-            ></Input>
+            />
           </div>
           {macAddress && (
             <div className="flex flex-col gap-2 w-full mt-3">
               <Typography variant="section-title">
                 {l10n.getString('tracker-settings-forget')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-settings-forget-description')}
               </Typography>
               <Button

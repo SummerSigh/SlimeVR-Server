@@ -2,33 +2,28 @@ import { BoardType, DeviceDataT } from 'solarxr-protocol';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { cacheWrap } from './cache';
 import semver from 'semver';
-import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
+import { normalizedHash } from './crypto';
 
 export interface FirmwareRelease {
   name: string;
   version: string;
   changelog: string;
-  firmwareFile: string;
+  firmwareFiles: Partial<Record<BoardType, { url: string; digest: string }>>;
   userCanUpdate: boolean;
 }
-
-// implemetation of https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-const hash = (str: string) => {
-  let hash = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = Math.imul(hash, 16777619); // FNV prime
-  }
-
-  // Convert to unsigned 32-bit integer and normalize (0, 1)
-  return (hash >>> 0) / 2 ** 32;
-};
 
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
-const checkUserCanUpdate = async (url: string, fwVersion: string) => {
-  if (!url) return true;
+const todaysRange = (deployData: [number, Date][]): number => {
+  let maxRange = 0;
+  for (const [range, date] of deployData) {
+    if (Date.now() >= date.getTime()) maxRange = range;
+  }
+  return maxRange;
+};
+
+const checkUserCanUpdate = async (uuid: string, url: string, fwVersion: string) => {
   const deployDataJson = JSON.parse(
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
@@ -39,7 +34,7 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
       60 * 60 * 1000
     )) || 'null'
   );
-  if (!deployDataJson) return true;
+  if (!deployDataJson) return false;
 
   const deployData = (
     Object.entries(deployDataJson).map(([key, val]) => {
@@ -57,19 +52,16 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   )
     return false; // Dates in the wrong order / cancel
 
-  const todayUpdateRange = deployData.find(([, date], index) => {
-    if (index === 0 && Date.now() < date.getTime()) return true;
-    return Date.now() >= date.getTime();
-  })?.[0];
-
+  const todayUpdateRange = todaysRange(deployData);
   if (!todayUpdateRange) return false;
 
-  const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
   // Make it so the hash change every version. Prevent the same user from getting the same delay
-  return hash(`${uniqueUserKey}-${fwVersion}`) <= todayUpdateRange;
+  return normalizedHash(`${uuid}-${fwVersion}`) <= todayUpdateRange;
 };
 
-export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | null> {
+export async function fetchCurrentFirmwareRelease(
+  uuid: string
+): Promise<FirmwareRelease | null> {
   const releases: any[] | null = JSON.parse(
     (await cacheWrap(
       'firmware-releases',
@@ -85,23 +77,40 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   const processedReleses = [];
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
-    if (!release.assets || !fwAsset /* || release.prerelease */) continue;
+    const fw12Asset = firstAsset(release.assets, 'BOARD_SLIMEVR_V1_2-firmware.bin');
+    const deployAsset = firstAsset(release.assets, 'deploy.json');
+    if (
+      !release.assets ||
+      !deployAsset ||
+      (!fwAsset && !fw12Asset) ||
+      release.prerelease
+    )
+      continue;
 
     let version = release.tag_name;
     if (version.charAt(0) === 'v') {
       version = version.substring(1);
     }
 
-    const deployAsset = firstAsset(release.assets, 'deploy.json');
     const userCanUpdate = await checkUserCanUpdate(
-      deployAsset?.browser_download_url,
+      uuid,
+      deployAsset.browser_download_url,
       version
     );
     processedReleses.push({
       name: release.name,
       version,
       changelog: release.body,
-      firmwareFile: fwAsset.browser_download_url,
+      firmwareFiles: {
+        [BoardType.SLIMEVR]: {
+          url: fwAsset.browser_download_url,
+          digest: fwAsset.digest,
+        },
+        [BoardType.SLIMEVR_V1_2]: {
+          url: fw12Asset.browser_download_url,
+          digest: fw12Asset.digest,
+        },
+      },
       userCanUpdate,
     });
 
@@ -119,7 +128,10 @@ export function checkForUpdate(
   if (!currentFirmwareRelease.userCanUpdate) return 'blocked';
 
   if (
-    device.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
+    !device.hardwareInfo?.officialBoardType ||
+    ![BoardType.SLIMEVR, BoardType.SLIMEVR_V1_2].includes(
+      device.hardwareInfo.officialBoardType
+    ) ||
     !semver.valid(currentFirmwareRelease.version) ||
     !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none')
   ) {

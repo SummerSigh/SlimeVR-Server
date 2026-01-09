@@ -31,6 +31,9 @@ tips-tap_setup = Vietoj pasirinkimo iš meniu, galite du kartus švelniai bakste
 tips-turn_on_tracker = Naudojate oficialius SlimeVR sekiklius? Nepamirškite <b><em>įjungti juos</em></b> po prijungimo prie kompiuterio!
 tips-failed_webgl = Įvyko techninė klaida inicijuojant WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Nepriskirta
@@ -239,7 +242,7 @@ widget-overlay-is_mirrored_label = Rodyti perdangą kaip veidrodį
 
 widget-drift_compensation-clear = Išvalyti dreifo kompensavimą
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Išvalyti tvirtinimo atstatymą
 
@@ -355,10 +358,8 @@ tracker-settings-name_section-label = Sekiklio pavadinimas
 tracker-settings-forget = Pamiršti sekiklį
 tracker-settings-forget-description = Tai pašalins sekiklį iš SlimeVR serverio ir nebeleis jam prisijungti, kol neperkrausite serverį. Sekiklio nustatymai nebus prarasti.
 tracker-settings-forget-label = Pamiršti sekiklį
-tracker-settings-update-unavailable = Neįmanoma atnaujinti (DIY)
 tracker-settings-update-low-battery = Negalima atnaujinti, baterijos lygis žemesnis nei 50%
 tracker-settings-update-up_to_date = Atnaujinta
-tracker-settings-update-available = Prieinamas atnaujinimas: { $versionName }
 tracker-settings-update = Atnaujinti dabar
 tracker-settings-update-title = Programinės įrangos versija
 
@@ -541,8 +542,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Neleidžia pėdo
 settings-general-fk_settings-leg_tweak-toe_snap-description = Bando atspėti pėdų pasukimą, jei nenaudojate pėdų sekiklius.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pasuka pėdas taip, kad jos būtų lygiagrečios grindims, kai stovite.
 settings-general-fk_settings-leg_fk = Kojų sekimas
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Įjungia pėdų tvirtinimo atstatymą atsistojant ant pirštų galų.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Pėdų tvirtinimo atstatymas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
@@ -595,7 +594,16 @@ settings-general-gesture_control-trackers =
 ## VMC OSC settings
 
 
+## Common OSC settings
+
+
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu
@@ -608,9 +616,6 @@ settings-general-gesture_control-trackers =
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -646,10 +651,7 @@ settings-general-gesture_control-trackers =
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup
@@ -692,3 +694,6 @@ settings-general-gesture_control-trackers =
 
 error_collection_modal-confirm = Sutinku
 error_collection_modal-cancel = Nesutinku
+
+## Tracking checklist section
+

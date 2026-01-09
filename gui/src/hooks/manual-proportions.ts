@@ -7,6 +7,8 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useMemo, useState } from 'react';
+import { useConfig } from './config';
+import * as Sentry from '@sentry/react';
 
 type LabelBase = {
   value: number;
@@ -56,13 +58,15 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
   changeBoneValue: (params: UpdateBoneParams) => void;
 } {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [config, setConfig] = useState<Omit<SkeletonConfigResponseT, 'pack'> | null>(
-    null
-  );
+  const { setConfig } = useConfig();
+  const [skeleton, setSkeleton] = useState<Omit<
+    SkeletonConfigResponseT,
+    'pack'
+  > | null>(null);
   const bodyPartsGrouped: Label[] = useMemo(() => {
-    if (!config) return [];
+    if (!skeleton) return [];
     if (type === 'linear') {
-      return config.skeletonParts.map(
+      return skeleton.skeletonParts.map(
         ({ bone, value }) =>
           ({
             type: 'bone',
@@ -78,12 +82,12 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
       ...[...BONE_MAPPING.keys()].map((groupName) => {
         const groupBones = BONE_MAPPING.get(groupName);
         if (!groupBones) throw 'invalid state - this value should always exits';
-        const total = config.skeletonParts
+        const total = skeleton.skeletonParts
           .filter(({ bone }) => groupBones.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
         return {
           type: 'group',
-          bones: config.skeletonParts
+          bones: skeleton.skeletonParts
             .filter(({ bone }) => groupBones.includes(bone))
             .map(({ bone, value }) => ({
               type: 'group-part',
@@ -99,7 +103,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
           value: total,
         } satisfies GroupLabel;
       }),
-      ...config.skeletonParts
+      ...skeleton.skeletonParts
         .filter(
           ({ bone }) =>
             ![...BONE_MAPPING.values()].find((bones) => bones.includes(bone))
@@ -115,10 +119,10 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
             }) satisfies BoneLabel
         ),
     ];
-  }, [config, type]);
+  }, [skeleton, type]);
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
-    setConfig(data);
+    setSkeleton(data);
   });
 
   useEffect(() => {
@@ -128,15 +132,15 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
   return {
     bodyPartsGrouped,
     changeBoneValue: (params) => {
-      if (!config) return;
+      if (!skeleton) return;
       if (params.type === 'group') {
         const group = BONE_MAPPING.get(params.group);
         if (!group) throw 'invalid state - group should exist';
-        const oldGroupTotal = config.skeletonParts
+        const oldGroupTotal = skeleton.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
         for (const part of group) {
-          const currentValue = config.skeletonParts.find(({ bone }) => bone === part);
+          const currentValue = skeleton.skeletonParts.find(({ bone }) => bone === part);
           if (!currentValue) throw 'invalid state - the bone should exists';
           const currentRatio = currentValue.value / oldGroupTotal;
           sendRPCPacket(
@@ -149,9 +153,9 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
       if (params.type === 'group-part') {
         const group = BONE_MAPPING.get(params.group);
         if (!group) throw 'invalid state - group should exist';
-        const part = config.skeletonParts.find(({ bone }) => bone === params.bone);
+        const part = skeleton.skeletonParts.find(({ bone }) => bone === params.bone);
         if (!part) throw 'invalid state - the part should exists';
-        const oldGroupTotal = config.skeletonParts
+        const oldGroupTotal = skeleton.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
         let newValue = part.value + oldGroupTotal * params.newValue; // the new ratio is computed from the group size and not the bone
@@ -170,7 +174,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         const signDiff = Math.sign(newValue - part.value);
         for (const part of group) {
           if (part === params.bone) continue;
-          const currentValue = config.skeletonParts.find(({ bone }) => bone === part);
+          const currentValue = skeleton.skeletonParts.find(({ bone }) => bone === part);
           if (!currentValue) throw 'invalid state - the bone should exists';
           sendRPCPacket(
             RpcMessage.ChangeSkeletonConfigRequest,
@@ -189,6 +193,8 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         );
       }
       sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
+      setConfig({ lastUsedProportions: 'manual' });
+      Sentry.metrics.count('manual_proportions_change', 1, { attributes: params });
     },
   };
 }

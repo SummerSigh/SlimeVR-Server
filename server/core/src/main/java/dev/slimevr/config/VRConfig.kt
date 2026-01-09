@@ -10,8 +10,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 @JsonVersionedModel(
-	currentVersion = "14",
-	defaultDeserializeToVersion = "14",
+	currentVersion = "15",
+	defaultDeserializeToVersion = "15",
 	toCurrentConverterClass = CurrentVRConfigConverter::class,
 )
 class VRConfig {
@@ -42,6 +42,8 @@ class VRConfig {
 
 	val stayAlignedConfig = StayAlignedConfig()
 
+	val hidConfig = HIDConfig()
+
 	@JsonDeserialize(using = TrackerConfigMapDeserializer::class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val trackers: MutableMap<String, TrackerConfig> = HashMap()
@@ -53,6 +55,10 @@ class VRConfig {
 	val knownDevices: MutableSet<String> = mutableSetOf()
 
 	val overlay: OverlayConfig = OverlayConfig()
+
+	val trackingChecklist: TrackingChecklistConfig = TrackingChecklistConfig()
+
+	val vrcConfig: VRCConfig = VRCConfig()
 
 	init {
 		// Initialize default settings for OSC Router
@@ -104,7 +110,7 @@ class VRConfig {
 			tracker.readConfig(config)
 			if (tracker.isImu()) tracker.resetsHandler.readDriftCompensationConfig(driftCompensation)
 			tracker.resetsHandler.readResetConfig(resetsConfig)
-			if (tracker.needsReset) {
+			if (tracker.allowReset) {
 				tracker.saveMountingResetOrientation(config)
 			}
 			if (tracker.allowFiltering) {

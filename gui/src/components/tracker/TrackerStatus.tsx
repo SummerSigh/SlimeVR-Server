@@ -33,9 +33,9 @@ export function TrackerStatus({ status }: { status: number }) {
   return (
     <div className="flex text-default gap-2">
       <div className="flex flex-col justify-center">
-        <div className={classNames('w-2 h-2 rounded-full', statusClass)}></div>
+        <div className={classNames('w-2 h-2 rounded-full', statusClass)} />
       </div>
-      <Typography color="secondary" whitespace="whitespace-nowrap">
+      <Typography whitespace="whitespace-nowrap">
         {l10n.getString(statusLabel)}
       </Typography>
     </div>

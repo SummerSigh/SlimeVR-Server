@@ -26,6 +26,9 @@ tips-tap_setup = Ви можете повільно постукати 2 раз�
 tips-turn_on_tracker = Використовуєте офіційні трекери SlimeVR? Не забудьте <b><em>увімкнути трекер</em></b> після підключення до ПК!
 tips-failed_webgl = Не вдалося ініціалізувати WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Не призначено
@@ -127,7 +130,7 @@ widget-overlay-is_mirrored_label = Відображення накладання
 
 widget-drift_compensation-clear = Очистити компенсацію дрейфу
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Очистити скидання положення
 
@@ -380,8 +383,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Прив'язк�
 settings-general-fk_settings-leg_tweak-toe_snap-description = Корекція пальців ноги намагається вгадати обертання ваших ступень, якщо трекери для них не використовуються
 settings-general-fk_settings-leg_tweak-foot_plant-description = Корекція ступні повертає ваші ступні так, щоб вони були паралельні землі при контакті
 settings-general-fk_settings-leg_fk = Трекінг ноги
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Активуйте скидання положення стопи, піднявшись навшпиньки.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Скинути положення стопи
 settings-general-fk_settings-arm_fk = Трекінг руки
 settings-general-fk_settings-arm_fk-description = Намагатися відстежувати руки за допомогою шолома, навіть якщо є інформація о позиції руки
 settings-general-fk_settings-arm_fk-force_arms = Відстеження рук з шолома
@@ -476,9 +477,6 @@ settings-general-interface-connected_trackers_warning-label = Попередже
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Режим розробника
-settings-general-interface-dev_mode-description = Цей режим може бути корисним, якщо вам потрібні поглиблені дані або для взаємодії з підключеними трекерами на більш просунутому рівні.
-settings-general-interface-dev_mode-label = Режим розробника
 settings-general-interface-use_tray = Згорнути в системний трей
 settings-general-interface-use_tray-description = Дозволяє закрити вікно, не закриваючи сервер SlimeVR, так що ви можете продовжувати використати його, не турбуючись про інтерфейс.
 settings-general-interface-use_tray-label = Згорнути в системний трей
@@ -503,7 +501,6 @@ settings-serial-factory_reset-warning =
     Це означає, що Wi-Fi та налаштування калібрування <b>будуть втрачені!</b>
 settings-serial-factory_reset-warning-ok = Я знаю, що роблю
 settings-serial-factory_reset-warning-cancel = Скасувати
-settings-serial-get_infos = Отримати інформацію
 settings-serial-serial_select = Вибір послідовного порту
 settings-serial-auto_dropdown_item = Автоматично
 settings-serial-get_wifi_scan = Сканувати мережу Wi-Fi
@@ -591,7 +588,16 @@ settings-osc-vmc-mirror_tracking = Дзеркальний трекінг
 settings-osc-vmc-mirror_tracking-description = Віддзеркалити трекери горизонтально.
 settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
 
+## Common OSC settings
+
+
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu
@@ -609,11 +615,6 @@ onboarding-setup_warning-cancel = Продовжити налаштування
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Повернутися до вступу
-onboarding-wifi_creds = Введіть дані Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Трекери використовуватимуть ці дані для бездротового підключення.
-    Будь ласка, використовуйте дані, до яких ви зараз підключені.
 onboarding-wifi_creds-skip = Пропустити налаштування Wi-Fi
 onboarding-wifi_creds-submit = Підтвердити!
 onboarding-wifi_creds-ssid =
@@ -652,13 +653,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Ласкаво просимо до SlimeVR
 onboarding-home-start = Давайте налаштуємося!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Повернутися до Прив'язки трекерів
-onboarding-enter_vr-title = Час вступати у VR!
-onboarding-enter_vr-description = Увімкніть усі свої трекери, а потім вступіть у VR!
-onboarding-enter_vr-ready = Я готовий
 
 ## Setup done
 
@@ -701,7 +695,6 @@ onboarding-connect_tracker-next = Я підключив усі свої трек
 
 onboarding-calibration_tutorial = Інструкція з калібрування IMU
 onboarding-calibration_tutorial-subtitle = Це допоможе зменшити дрейф трекера!
-onboarding-calibration_tutorial-description = Кожен раз, коли ви вмикаєте трекери, їм потрібно на мить відпочити на рівній поверхні для калібрування. Давайте зробимо те ж саме, натиснувши кнопку "{ onboarding-calibration_tutorial-calibrate }", <b>не переміщайте їх!</b>
 onboarding-calibration_tutorial-calibrate = Я поклав свої трекери на стіл
 onboarding-calibration_tutorial-status-waiting = Чекаємо на Вас
 onboarding-calibration_tutorial-status-calibrating = Калібрування
@@ -807,10 +800,7 @@ onboarding-automatic_proportions-recording-timer =
 onboarding-automatic_proportions-verify_results-title = Перевірити результати
 onboarding-automatic_proportions-verify_results-processing = Обробка результату
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup
@@ -860,4 +850,7 @@ unknown_device-modal-confirm = Звісно!
 unknown_device-modal-forget = Ігнорувати
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

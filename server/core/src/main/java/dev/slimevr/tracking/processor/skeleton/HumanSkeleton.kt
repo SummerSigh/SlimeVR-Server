@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
@@ -124,7 +125,6 @@ class HumanSkeleton(
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
 		if (old == new) return@observable
 
-		humanPoseManager.checkReportMissingHmd()
 		humanPoseManager.checkTrackersRequiringReset()
 	}
 	var neckTracker: Tracker? = null
@@ -212,8 +212,10 @@ class HumanSkeleton(
 
 	// Modules
 	var legTweaks = LegTweaks(this)
-	var tapDetectionManager = TapDetectionManager(this)
+	var tapDetectionManager: TapDetectionManager? = null
 	var localizer = Localizer(this)
+	var ikSolver = IKSolver(headBone)
+	var userHeightCalibration: UserHeightCalibration? = null
 
 	// Stay Aligned
 	var trackerSkeleton = TrackerSkeleton(this)
@@ -231,13 +233,11 @@ class HumanSkeleton(
 	) : this(humanPoseManager) {
 		setTrackersFromList(server.allTrackers)
 		tapDetectionManager = TapDetectionManager(
+			server,
 			this,
 			humanPoseManager,
-			server.configManager.vrConfig.tapDetection,
-			server.resetHandler,
-			server.tapSetupHandler,
-			server.allTrackers,
 		)
+		userHeightCalibration = UserHeightCalibration(server, humanPoseManager)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
 		stayAlignedConfig = server.configManager.vrConfig.stayAlignedConfig
@@ -436,16 +436,36 @@ class HumanSkeleton(
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
-		hasLeftFingerTracker = leftThumbMetacarpalTracker != null || leftThumbProximalTracker != null || leftThumbDistalTracker != null ||
-			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
-			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
-			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
-			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null
-		hasRightFingerTracker = rightThumbMetacarpalTracker != null || rightThumbProximalTracker != null || rightThumbDistalTracker != null ||
-			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
-			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
-			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
-			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
+		hasLeftFingerTracker = leftThumbMetacarpalTracker != null ||
+			leftThumbProximalTracker != null ||
+			leftThumbDistalTracker != null ||
+			leftIndexProximalTracker != null ||
+			leftIndexIntermediateTracker != null ||
+			leftIndexDistalTracker != null ||
+			leftMiddleProximalTracker != null ||
+			leftMiddleIntermediateTracker != null ||
+			leftMiddleDistalTracker != null ||
+			leftRingProximalTracker != null ||
+			leftRingIntermediateTracker != null ||
+			leftRingDistalTracker != null ||
+			leftLittleProximalTracker != null ||
+			leftLittleIntermediateTracker != null ||
+			leftLittleDistalTracker != null
+		hasRightFingerTracker = rightThumbMetacarpalTracker != null ||
+			rightThumbProximalTracker != null ||
+			rightThumbDistalTracker != null ||
+			rightIndexProximalTracker != null ||
+			rightIndexIntermediateTracker != null ||
+			rightIndexDistalTracker != null ||
+			rightMiddleProximalTracker != null ||
+			rightMiddleIntermediateTracker != null ||
+			rightMiddleDistalTracker != null ||
+			rightRingProximalTracker != null ||
+			rightRingIntermediateTracker != null ||
+			rightRingDistalTracker != null ||
+			rightLittleProximalTracker != null ||
+			rightLittleIntermediateTracker != null ||
+			rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
@@ -454,7 +474,12 @@ class HumanSkeleton(
 		humanPoseManager.updateNodeOffsetsInSkeleton()
 
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig(trackers)
+		tapDetectionManager?.refresh()
+
+		userHeightCalibration?.checkTrackers()
+
+		// Rebuild Ik Solver
+		ikSolver.buildChains(trackers)
 
 		// Update bones tracker field
 		refreshBoneTracker()
@@ -515,7 +540,8 @@ class HumanSkeleton(
 	 */
 	@VRServerThread
 	fun updatePose() {
-		tapDetectionManager.update()
+		tapDetectionManager?.update()
+		userHeightCalibration?.tick()
 
 		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 
@@ -1173,7 +1199,7 @@ class HumanSkeleton(
 
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
 
-			SkeletonConfigToggles.USE_POSITION -> newValue
+			SkeletonConfigToggles.USE_POSITION -> ikSolver.enabled = newValue
 
 			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
 
@@ -1204,7 +1230,8 @@ class HumanSkeleton(
 		}
 		// If trackingArmFromController, reverse
 		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
-			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) && isTrackingRightArmFromController
+			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) &&
+			isTrackingRightArmFromController
 		) {
 			transOffset = -transOffset
 		}
@@ -1519,6 +1546,8 @@ class HumanSkeleton(
 
 	@JvmOverloads
 	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+		humanPoseManager.server?.serverGuards?.onFullReset()
+
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
@@ -1531,7 +1560,7 @@ class HumanSkeleton(
 		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && (tracker.needsReset || tracker.isHmd) && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
+			if (tracker != null && (tracker.allowReset || tracker.isHmd) && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}
@@ -1543,6 +1572,7 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
+		ikSolver.resetOffsets()
 		LogManager.info("[HumanSkeleton] Reset: full ($resetSourceName)")
 	}
 
@@ -1553,16 +1583,16 @@ class HumanSkeleton(
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-				// Only reset if head needsReset and isn't computed
-				if (it.needsReset && !it.isComputed) {
+				// Only reset if head allowReset and isn't computed
+				if (it.allowReset && !it.isComputed) {
 					it.resetsHandler.resetYaw(referenceRotation)
 				}
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
-			// Only reset if tracker needsReset
-			if (tracker != null && tracker.needsReset && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
+			// Only reset if tracker allowReset
+			if (tracker != null && tracker.allowReset && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
 		}
@@ -1584,7 +1614,7 @@ class HumanSkeleton(
 		// If there's a server present (required for status) and any tracker reports a
 		// non-zero reset status (indicates reset required), then block mounting reset,
 		// as it requires a full reset first
-		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.lastResetStatus != 0u }) {
+		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.needReset }) {
 			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
 			return
 		}
@@ -1593,45 +1623,70 @@ class HumanSkeleton(
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-				// Only reset if head needsMounting or is computed but not HMD
-				if (it.needsMounting || (it.isComputed && !it.isHmd)) {
+				// Only reset if head allowMounting or is computed but not HMD
+				if (it.allowMounting || (it.isComputed && !it.isHmd)) {
 					it.resetsHandler.resetMounting(referenceRotation)
 				}
 			}
 			referenceRotation = it.getRotation()
 		}
 
-		// If onlyFeet is true, feet will be forced to be mounting reset in their reset handlers.
-		val onlyFeet = bodyParts.isNotEmpty() && bodyParts.all { it == BodyPart.LEFT_FOOT || it == BodyPart.RIGHT_FOOT }
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
-			if (tracker != null && tracker.needsMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
-				tracker.resetsHandler.resetMounting(referenceRotation, onlyFeet)
+			if (tracker != null && tracker.allowMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
+				tracker.resetsHandler.resetMounting(referenceRotation)
 			}
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
+
+		if (humanPoseManager.server != null) {
+			humanPoseManager.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
+				MountingMethods.AUTOMATIC
+			if (!humanPoseManager.server.trackingChecklistManager.resetMountingCompleted) {
+				humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = bodyParts.any { it ->
+					val defaultParts = if (humanPoseManager.server.configManager.vrConfig.resetsConfig.resetMountingFeet) {
+						TrackerUtils.allBodyPartsButFingers
+					} else {
+						TrackerUtils.allBodyPartsButFingersAndFeets
+					}
+
+					return@any defaultParts.contains(it)
+				}
+			}
+			if (!humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted) {
+				humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted = bodyParts.any { TrackerUtils.feetsBodyParts.contains(it) }
+			}
+			humanPoseManager.server.configManager.saveConfig()
+		}
+
 		LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName)")
 	}
 
 	@VRServerThread
 	fun clearTrackersMounting(resetSourceName: String?) {
 		headTracker?.let {
-			if (it.needsMounting) it.resetsHandler.clearMounting()
+			if (it.allowMounting) it.resetsHandler.clearMounting()
 		}
 		for (tracker in trackersToReset) {
 			if (tracker != null &&
-				tracker.needsMounting
+				tracker.allowMounting
 			) {
 				tracker.resetsHandler.clearMounting()
 			}
 		}
 		legTweaks.resetBuffer()
 		LogManager.info("[HumanSkeleton] Clear: mounting ($resetSourceName)")
+
+		if (humanPoseManager.server != null) {
+			humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = false
+			humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted = false
+			humanPoseManager.server.configManager.saveConfig()
+		}
 	}
 
 	fun updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig(null)
+		tapDetectionManager?.refresh()
 	}
 
 	fun updateLegTweaksConfig() {
@@ -1693,6 +1748,14 @@ class HumanSkeleton(
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		legTweaks.enabled = value
+	}
+
+	/**
+	 * enable/disable IK solver (for Autobone)
+	 */
+	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		ikSolver.enabled = value
 	}
 
 	@VRServerThread

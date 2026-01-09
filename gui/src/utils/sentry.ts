@@ -9,7 +9,8 @@ import {
 } from 'react-router-dom';
 import { DeviceDataT } from 'solarxr-protocol';
 
-export function getSentryOrCompute(enabled = false) {
+export function getSentryOrCompute(enabled = false, uuid: string) {
+  Sentry.setUser({ id: uuid });
   // if sentry is already initialized - SKIP
   if (enabled && Sentry.isInitialized()) return;
 

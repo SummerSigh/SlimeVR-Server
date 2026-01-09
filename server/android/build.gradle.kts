@@ -5,15 +5,18 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
+import com.android.build.gradle.internal.tasks.BaseTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Base64
 
 plugins {
 	kotlin("android")
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.6.1"
+	id("com.android.application") version "8.13.1"
 	id("org.ajoberstar.grgit")
 }
 
@@ -28,15 +31,54 @@ java {
 	}
 }
 
-tasks.register<Copy>("copyGuiAssets") {
+val copyGuiAssets = tasks.register<Copy>("copyGuiAssets") {
+	val target = layout.projectDirectory.dir("src/main/assets/web-gui")
+	delete(target)
 	from(rootProject.layout.projectDirectory.dir("gui/dist"))
-	into(layout.projectDirectory.dir("src/main/resources/web-gui"))
+	into(target)
 	if (inputs.sourceFiles.isEmpty) {
 		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
 	}
 }
 tasks.preBuild {
-	dependsOn(":server:android:copyGuiAssets")
+	dependsOn(copyGuiAssets)
+}
+
+// Set up signing pre/post tasks
+val preSign = tasks.register("preSign") {
+	dependsOn(writeTempKeyStore)
+}
+val postSign = tasks.register("postSign") {
+	finalizedBy(deleteTempKeyStore)
+}
+tasks.withType<BaseTask> {
+	dependsOn(preSign)
+	finalizedBy(postSign)
+}
+
+// Handle GitHub secret Android KeyStore files
+val envKeyStore: String? = System.getenv("ANDROID_STORE_FILE")?.takeIf { it.isNotBlank() }
+val tempKeyStore = project.layout.buildDirectory.file("tmp/keystore.tmp.jks").get().asFile
+val writeTempKeyStore = tasks.register("writeTempKeyStore") {
+	if (envKeyStore != null) {
+		doLast {
+			tempKeyStore.apply {
+				ensureParentDirsCreated()
+				tempKeyStore.writeBytes(Base64.getDecoder().decode(envKeyStore))
+				tempKeyStore.deleteOnExit()
+			}
+		}
+		finalizedBy(deleteTempKeyStore)
+	} else {
+		enabled = false
+	}
+}
+val deleteTempKeyStore = tasks.register<Delete>("deleteTempKeyStore") {
+	if (envKeyStore != null) {
+		delete(tempKeyStore)
+	} else {
+		enabled = false
+	}
 }
 
 tasks.withType<KotlinCompile> {
@@ -68,17 +110,13 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.15.0")
 
 	// Android stuff
-	implementation("androidx.appcompat:appcompat:1.7.0")
-	implementation("androidx.core:core-ktx:1.13.1")
-	implementation("com.google.android.material:material:1.12.0")
-	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+	implementation("androidx.appcompat:appcompat:1.7.1")
+	implementation("androidx.core:core-ktx:1.17.0")
+	implementation("com.google.android.material:material:1.13.0")
+	implementation("androidx.constraintlayout:constraintlayout:2.2.1")
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-	androidTestImplementation("androidx.test.ext:junit:1.2.1")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:2.3.12")
-	implementation("io.ktor:ktor-server-netty:2.3.10")
-	implementation("io.ktor:ktor-server-caching-headers:2.3.12")
+	androidTestImplementation("androidx.test.ext:junit:1.3.0")
+	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
@@ -98,7 +136,7 @@ android {
 		compile your app. This means your app can use the API features included in
 		this API level and lower. */
 
-	compileSdk = 35
+	compileSdk = 36
 
 	/* The defaultConfig block encapsulates default settings and entries for all
 		build variants and can override some attributes in main/AndroidManifest.xml
@@ -118,18 +156,42 @@ android {
 		minSdk = 26
 
 		// Specifies the API level used to test the app.
-		targetSdk = 35
+		targetSdk = 36
 
 		// adds an offset of the version code as we might do apk releases in the middle of actual
 		// releases if we failed on bundling or stuff
-		val versionCodeOffset = 1
+		val versionCodeOffset = 4
 		// Defines the version number of your app.
 		versionCode = (extra["gitVersionCode"] as? Int)?.plus(versionCodeOffset) ?: 0
 
 		// Defines a user-friendly version name for your app.
 		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
 
+		logger.lifecycle("i: Configured for SlimeVR Android version \"$versionName\" ($versionCode).")
+
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+	}
+
+	signingConfigs {
+		val inputKeyStore: File? = if (envKeyStore != null) {
+			logger.lifecycle("i: \"ANDROID_STORE_FILE\" environment variable found, using for signing config.")
+			tempKeyStore
+		} else {
+			file("secrets/keystore.jks").takeIf { it.canRead() && it.length() > 0 }
+		}
+
+		if (inputKeyStore != null) {
+			logger.info("i: Configuring signing for Android KeyStore file: \"${inputKeyStore.path}\".")
+
+			create("release") {
+				storeFile = inputKeyStore
+				storePassword = System.getenv("ANDROID_STORE_PASSWD")
+				keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "key0"
+				keyPassword = System.getenv("ANDROID_KEY_PASSWD")
+			}
+		} else {
+			logger.warn("w: Android KeyStore file is not valid or not found, skipping signing.")
+		}
 	}
 
 	/*	The buildTypes block is where you can configure multiple build types.
@@ -143,12 +205,14 @@ android {
 		/*	By default, Android Studio configures the release build type to enable code
 			shrinking, using minifyEnabled, and specifies the default ProGuard rules file. */
 
-		getByName("release") {
+		release {
 			isMinifyEnabled = true // Enables code shrinking for the release build type.
+			isShrinkResources = true // Enables resource shrinking.
 			proguardFiles(
-				getDefaultProguardFile("proguard-android.txt"),
+				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
 			)
+			signingConfig = signingConfigs.findByName("release")
 		}
 	}
 
@@ -156,6 +220,7 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
 	}
+
 	kotlinOptions {
 		jvmTarget = "17"
 	}

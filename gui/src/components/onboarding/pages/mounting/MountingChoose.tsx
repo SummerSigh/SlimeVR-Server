@@ -5,6 +5,7 @@ import { SkipSetupWarningModal } from '@/components/onboarding/SkipSetupWarningM
 import classNames from 'classnames';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
+import * as Sentry from '@sentry/react';
 
 export function MountingChoose() {
   const { l10n } = useLocalization();
@@ -17,16 +18,12 @@ export function MountingChoose() {
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto px-4 pb-4">
-        <div className="flex flex-col gap-4 justify-center">
+        <div className="flex flex-col gap-8 justify-center">
           <div className="xs:w-10/12 xs:max-w-[666px]">
             <Typography variant="main-title">
               {l10n.getString('onboarding-choose_mounting')}
             </Typography>
-            <Typography
-              variant="standard"
-              color="secondary"
-              whitespace="whitespace-pre-line"
-            >
+            <Typography variant="standard" whitespace="whitespace-pre-line">
               {l10n.getString('onboarding-choose_mounting-description')}
             </Typography>
           </div>
@@ -37,12 +34,19 @@ export function MountingChoose() {
           >
             <div
               className={classNames(
-                'rounded-lg p-4 flex',
+                'rounded-lg p-4 flex relative',
                 !state.alonePage && 'bg-background-70',
                 state.alonePage && 'bg-background-60'
               )}
             >
-              <div className="flex flex-col gap-4">
+              <div className="bg-accent-background-30 absolute -left-4 -top-5 p-1.5 rounded-lg">
+                <Typography variant="vr-accessible" italic>
+                  {l10n.getString(
+                    'onboarding-choose_mounting-auto_mounting-label-v2'
+                  )}
+                </Typography>
+              </div>
+              <div className="flex flex-col gap-4 ">
                 <div className="flex flex-grow flex-col gap-4 max-w-sm">
                   <div>
                     <Typography variant="main-title" bold>
@@ -50,14 +54,9 @@ export function MountingChoose() {
                         'onboarding-choose_mounting-auto_mounting'
                       )}
                     </Typography>
-                    <Typography variant="vr-accessible" italic>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-label-v2'
-                      )}
-                    </Typography>
                   </div>
                   <div>
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'onboarding-choose_mounting-auto_mounting-description'
                       )}
@@ -68,6 +67,11 @@ export function MountingChoose() {
                   variant="primary"
                   to={'/onboarding/mounting/auto'}
                   className="self-start mt-auto"
+                  onClick={() => {
+                    Sentry.metrics.count('mounting_choose', 1, {
+                      attributes: { choose: 'auto' },
+                    });
+                  }}
                   state={{ alonePage: state.alonePage }}
                 >
                   {l10n.getString('onboarding-manual_mounting-auto_mounting')}
@@ -92,20 +96,15 @@ export function MountingChoose() {
                         'absolute w-[100px] -right-2 -top-10',
                         animated && 'animate-[bounce_1s_1]'
                       )}
-                    ></img>
+                    />
                     <Typography variant="main-title" bold>
                       {l10n.getString(
                         'onboarding-choose_mounting-manual_mounting'
                       )}
                     </Typography>
-                    <Typography variant="vr-accessible" italic>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-label-v2'
-                      )}
-                    </Typography>
                   </div>
                   <div>
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'onboarding-choose_mounting-manual_mounting-description'
                       )}
@@ -118,6 +117,11 @@ export function MountingChoose() {
                   to="/onboarding/mounting/manual"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
+                  onClick={() => {
+                    Sentry.metrics.count('mounting_choose', 1, {
+                      attributes: { choose: 'manual' },
+                    });
+                  }}
                 >
                   {l10n.getString(
                     'onboarding-automatic_mounting-manual_mounting'
@@ -141,7 +145,7 @@ export function MountingChoose() {
         accept={skipSetup}
         onClose={() => setShowWarning(false)}
         isOpen={showWarning}
-      ></SkipSetupWarningModal>
+      />
     </>
   );
 }

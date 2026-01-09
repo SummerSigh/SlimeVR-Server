@@ -290,7 +290,7 @@ class VMCHandler(
 				userEditable = true,
 				isComputed = position != null,
 				usesTimeout = true,
-				needsReset = position != null,
+				allowReset = position != null,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker
@@ -428,8 +428,7 @@ class VMCHandler(
 						val role = tracker.trackerPosition
 						address = if (role == TrackerPosition.HEAD) {
 							"/VMC/Ext/Hmd/Pos"
-						} else if (role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND
-						) {
+						} else if (role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND) {
 							"/VMC/Ext/Con/Pos"
 						} else {
 							"/VMC/Ext/Tra/Pos"

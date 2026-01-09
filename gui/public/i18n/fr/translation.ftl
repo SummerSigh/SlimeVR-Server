@@ -31,6 +31,13 @@ tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choi
 tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N'oubliez pas <b><em>d'allumer votre capteur</em></b> après l'avoir connecté au PC !
 tips-failed_webgl = Échec de l'initialisation de WebGL.
 
+## Units
+
+unit-meter = Metre
+unit-foot = Pied
+unit-inch = Pouce
+unit-cm = cm
+
 ## Body parts
 
 body_part-NONE = Non-attribué
@@ -95,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = Carte de développement SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -118,7 +127,7 @@ skeleton_bone-HEAD-desc =
 skeleton_bone-NECK = Longueur du cou
 skeleton_bone-NECK-desc =
     Ceci est la distance entre le milieu de votre tête et la base de votre cou.
-    Pour l’ajuster, hochez votre tête de haut en bas ou inclinez votre tête de gauche à droite et modifiez-la 
+    Pour l’ajuster, hochez votre tête de haut en bas ou inclinez votre tête de gauche à droite et modifiez-la
     jusqu’à ce que vos capteurs bougent le moins possible.
 skeleton_bone-torso_group = Longueur du torse
 skeleton_bone-torso_group-desc =
@@ -244,7 +253,12 @@ reset-reset_all_warning_default-v2 =
     Êtes-vous sûr de vouloir faire cela ?
 reset-full = Réinitialisation complète
 reset-mounting = Réinitialiser l'alignement
+reset-mounting-feet = Réinitialiser l'alignement des pieds
+reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
+reset-error-no_feet_tracker = Aucun traqueur de pieds n’est assigné
+reset-error-no_fingers_tracker = Aucun traqueur de doigts n'est assigné
+reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
 
 ## Serial detection stuff
 
@@ -268,6 +282,7 @@ navbar-settings = Réglages
 ## Biovision hierarchy recording
 
 bvh-start_recording = Enregistrer BVH
+bvh-stop_recording = Sauvegarder l’enregistrement BVH
 bvh-recording = Enregistrement...
 bvh-save_title = Sauvegarder l’enregistrement BVH
 
@@ -286,7 +301,7 @@ widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
 widget-drift_compensation-clear = Réinitialiser la compensation de la dérive
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Réinitialiser la calibration de l'alignement
 
@@ -404,11 +419,11 @@ tracker-settings-name_section-label = Nom personalisé
 tracker-settings-forget = Oublier capteur
 tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l'empêche de s'y connecter jusqu'à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
 tracker-settings-forget-label = Oublier capteur
-tracker-settings-update-unavailable = Ne peut pas être mis à jour (DIY)
+tracker-settings-update-unavailable-v2 = Aucune publication trouvée
+tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatible
 tracker-settings-update-low-battery = Mise à jour impossible. Batterie inférieure à 50 %
 tracker-settings-update-up_to_date = À jour
 tracker-settings-update-blocked = Mise à jour non disponible. Aucune autre version disponible
-tracker-settings-update-available = { $versionName } est maintenant disponible
 tracker-settings-update = Mettre à jour maintenant
 tracker-settings-update-title = Version du micrologiciel
 
@@ -476,6 +491,7 @@ mounting_selection_menu-close = Fermer
 
 settings-sidebar-title = Réglages
 settings-sidebar-general = Général
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Paramètres des capteurs
 settings-sidebar-stay_aligned = Garder Aligné
 settings-sidebar-fk_settings = Paramètres de la capture
@@ -483,9 +499,11 @@ settings-sidebar-gesture_control = Contrôle gestuel
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Routeur OSC
 settings-sidebar-osc_trackers = Capteurs OSC VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
+settings-sidebar-home = Ecran d'accueil
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
@@ -611,13 +629,16 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au s
 settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activer la réinitialisation de l'alignement des pieds en allant sur la pointe des pieds.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Réinitialisation de l'alignement des pieds
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corriger avec les contraintes
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corriger les rotations des articulations lorsqu'elles dépassent leur limite
+settings-general-fk_settings-ik = Données de position
+settings-general-fk_settings-ik-use_position = Utiliser les données de position
+settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
@@ -724,9 +745,6 @@ settings-general-interface-connected_trackers_warning-label = Avertissement de c
 ## Behavior settings
 
 settings-interface-behavior = Comportement
-settings-general-interface-dev_mode = Mode développeur
-settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
 settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
@@ -768,12 +786,16 @@ settings-serial-factory_reset-warning =
             Ce qui signifie que les paramètres de Wi-Fi et de calibration <b>seront tous perdus !</b>
 settings-serial-factory_reset-warning-ok = Je sais ce que je fais
 settings-serial-factory_reset-warning-cancel = Annuler
-settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
 settings-serial-get_wifi_scan = Obtenir scan WiFi
 settings-serial-file_type = Texte brut
 settings-serial-save_logs = Enregistrer dans un fichier
+settings-serial-send_command = Envoyer
+settings-serial-send_command-placeholder = Commande...
+settings-serial-send_command-warning = <b>Avertissement:</b> Exécuter des commandes en série peut entraîner une perte de données ou rendre les capteurs inutilisables.
+settings-serial-send_command-warning-ok = Je sais ce que je fais
+settings-serial-send_command-warning-cancel = Annuler
 
 ## OSC router settings
 
@@ -869,6 +891,11 @@ settings-osc-vmc-mirror_tracking = Inverser les mouvements
 settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
 settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
 
+## Common OSC settings
+
+settings-osc-common-network-ports_match_error = Les ports d’entrée et de sortie du routeur OSC ne peuvent pas être les mêmes !
+settings-osc-common-network-port_banned_error = Le port { $port } ne peut pas être utilisé !
+
 ## Advanced settings
 
 settings-utils-advanced = Avancé
@@ -902,6 +929,14 @@ settings-utils-advanced-open_logs = Dossier des logs
 settings-utils-advanced-open_logs-description = Ouvre le dossier des logs de SlimeVR, contenant ses logs, dans l'explorateur de fichier
 settings-utils-advanced-open_logs-label = Ouvrir le dossier
 
+## Home Screen
+
+settings-home-list-layout-desc = Sélectionnez l'une des dispositions possibles de l'écran d'accueil
+
+## Tracking Checlist
+
+settings-tracking_checklist-active_steps = Etapes actives
+
 ## Setup/onboarding menu
 
 onboarding-skip = Passer
@@ -917,11 +952,6 @@ onboarding-setup_warning-cancel = Continuer la configuration
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Retour à l'introduction
-onboarding-wifi_creds = Saisir les identifiants Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Les capteurs utiliseront ces informations d'identification pour se connecter au réseau.
-    Veuillez utiliser les identifiants avec lesquels vous êtes actuellement connecté.
 onboarding-wifi_creds-skip = Passer configuration Wi-Fi
 onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-ssid =
@@ -961,13 +991,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Bienvenue sur SlimeVR
 onboarding-home-start = Commencer
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Revenir à l'attribution des capteurs
-onboarding-enter_vr-title = Allons en réalité virtuelle !
-onboarding-enter_vr-description = Enfilez tous vos capteurs puis allez en réalité virtuelle !
-onboarding-enter_vr-ready = Je suis prêt
 
 ## Setup done
 
@@ -1010,10 +1033,10 @@ onboarding-connect_serial-error-modal-no_serial_device_found-desc =
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] No trackers
-        [one] 1 tracker
-       *[other] { $amount } trackers
-    } connected
+        [0] No trackers connected
+        [one] 1 tracker connected
+       *[other] { $amount } trackers connected
+    }
 onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
 
 ## Tracker calibration tutorial
@@ -1194,10 +1217,10 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position j
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
+onboarding-automatic_mounting-return-home = Terminé
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Revenir au didacticiel de réinitialisation
 onboarding-manual_proportions-title = Proportions manuelles du corps
 onboarding-manual_proportions-fine_tuning_button = Automatiquement ajuster les proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Veuillez connecter un casque VR pour utiliser l'ajustement automatique
@@ -1295,30 +1318,12 @@ onboarding-automatic_proportions-smol_warning =
     <b>Veuillez refaire les mesures et vous assurer qu'elles sont correctes.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Retour
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proportions à l'échelle
-onboarding-scaled_proportions-description = Pour que les capteurs SlimeVR fonctionnent, nous avons besoin de connaître la longueur de vos os. Cela utilisera une proportion moyenne et l'ajustera en fonction de votre taille.
-onboarding-scaled_proportions-manual_height-title = Configuration de votre taille
-onboarding-scaled_proportions-manual_height-description-v2 = Cette hauteur sera utilisée comme base pour les proportions de votre corps.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR n'est actuellement pas connecté à SlimeVR, les mesures ne peuvent donc pas être basées sur votre casque. <b>Procédez à vos risques et périls ou consultez la documentation !</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Votre hauteur totale est :
-onboarding-scaled_proportions-manual_height-estimated_height = La hauteur estimée de votre casque est de :
-onboarding-scaled_proportions-manual_height-next_step = Continuer et enregistrer
-onboarding-scaled_proportions-manual_height-warning =
-    Vous utilisez actuellement le réglage manuel de la mise à l'échelle des proportions !
-    <b>Ce mode est recommandé uniquement si vous n'utilisez pas de casque VR avec SlimeVR</b>
-    
-    Pour pouvoir utiliser les proportions mises à l’échelle automatiquement, veuillez :
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Connecter un casque VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Assurez-vous que vos manettes sont connectées et correctement assignées à vos mains
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Réinitialiser les proportions de votre corps
-onboarding-scaled_proportions-reset_proportion-description = Pour définir les proportions de votre corps en fonction de votre taille, vous devez réinitialiser toutes vos proportions. Cela remplacera les proportions que vous avez configurées par une configuration de base.
-onboarding-scaled_proportions-done-title = Ensemble de proportions du corps
-onboarding-scaled_proportions-done-description = Les proportions de votre corps devraient maintenant être configurées à partir de votre taille.
+onboarding-user_height-title = Quelle est votre taille ?
+onboarding-user_height-need_head_tracker = Un casque VR (ou capteur de tête) et des manettes à position absolue sont nécessaires pour calculer votre taille.
+onboarding-user_height-calculate = Calculer ma taille automatiquement
+onboarding-user_height-next_step = Continuer et enregistrer
 
 ## Stay Aligned setup
 
@@ -1393,81 +1398,44 @@ firmware_tool = Outil de micrologiciel DIY
 firmware_tool-description = Vous permet de configurer et de flash vos capteurs DIY
 firmware_tool-not_available = Oups, l'outil de micrologiciel n'est pas disponible en ce moment. Revenez plus tard !
 firmware_tool-not_compatible = L'outil de micrologiciel n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
-firmware_tool-board_step = Sélectionnez votre carte
-firmware_tool-board_step-description = Sélectionnez l'une des cartes répertoriées ci-dessous.
-firmware_tool-board_pins_step = Vérifiez les broches
-firmware_tool-board_pins_step-description =
-    Veuillez vérifier que les broches sélectionnées sont correctes.
-    Si vous avez suivi la documentation de SlimeVR, les valeurs par défaut devraient être correctes.
-firmware_tool-board_pins_step-enable_led = Activer la LED
-firmware_tool-board_pins_step-led_pin =
-    .label = Broche LED
-    .placeholder = Entrez l'adresse de la broche LED
-firmware_tool-board_pins_step-battery_type = Sélectionnez le type de batterie
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Batterie externe
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Batterie interne
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = MCP3021 interne
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Broche du capteur de batterie
-    .placeholder = Entrez l'adresse de la broche du capteur de batterie
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Résistance de la batterie (Ohms)
-    .placeholder = Entrer la valeur de la résistance de la batterie
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Bouclier de batterie R1 (Ohms)
-    .placeholder = Saisir la valeur du bouclier de batterie R1
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Bouclier de batterie R2 (Ohms)
-    .placeholder = Saisir la valeur du bouclier de batterie R1
-firmware_tool-add_imus_step = Déclarez vos IMU
-firmware_tool-add_imus_step-description =
-    Veuillez ajouter les IMUs de votre capteur
-    Si vous avez suivi la documentation de SlimeVR, les valeurs par défaut devraient être correctes
-firmware_tool-add_imus_step-imu_type-label = Type d'IMU
-firmware_tool-add_imus_step-imu_type-placeholder = Sélectionnez le type d'IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = Rotation de l'IMU (deg)
-    .placeholder = Angle de rotation de l'IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = Broche SCL
-    .placeholder = Adresse de la broche SCL
-firmware_tool-add_imus_step-sda_pin =
-    .label = Broche SDA
-    .placeholder = Adresse de la broche SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = Broche INT
-    .placeholder = Adresse de la broche INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Capteur optionnel
-firmware_tool-add_imus_step-show_less = Afficher moins
-firmware_tool-add_imus_step-show_more = Afficher plus
-firmware_tool-add_imus_step-add_more = Ajouter plus d'IMUs
-firmware_tool-select_firmware_step = Sélectionnez la version du micrologiciel
-firmware_tool-select_firmware_step-description = Veuillez choisir la version du micrologiciel que vous souhaitez utiliser
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Afficher les micrologiciels de tierces parties
+firmware_tool-select_source = Sélectionnez le micrologiciel à flasher
+firmware_tool-select_source-description = Sélectionnez le micrologiciel que vous souhaitez flasher sur votre carte
+firmware_tool-select_source-error = Impossible de charger les sources
+firmware_tool-select_source-board_type = Type de carte
+firmware_tool-select_source-firmware = Source du micrologiciel
+firmware_tool-select_source-version = Version du micrologiciel
+firmware_tool-select_source-official = Officiel
+firmware_tool-select_source-dev = Dev
+firmware_tool-board_defaults = Configurez votre carte
+firmware_tool-board_defaults-description = Réglez les broches ou réglages pour votre matériel
+firmware_tool-board_defaults-add = Ajouter
+firmware_tool-board_defaults-reset = Réinitialisation à la valeur par défaut
+firmware_tool-board_defaults-error-required = Champ requis
+firmware_tool-board_defaults-error-format = Format invalide
+firmware_tool-board_defaults-error-format-number = Pas un nombre
 firmware_tool-flash_method_step = Méthode de flash
 firmware_tool-flash_method_step-description = Veuillez sélectionner la méthode de flash que vous souhaitez utiliser
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Utiliser la méthode « over the air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son micrologiciel. Ne fonctionne que sur les capteurs déjà configurés.
-firmware_tool-flash_method_step-serial =
-    .label = Série
-    .description = Utiliser un cable USB pour mettre à jour votre capteur
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Utilisez la méthode « over-the-air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son microgiciel. Cette méthode ne fonctionne que pour les capteurs déjà configurés.
+firmware_tool-flash_method_step-ota-info =
+    Nous utilisons vos identifiants wifi pour flasher le capteur et confirmer que tout s'est déroulé correctement.
+    <b>Nous ne stockons pas vos identifiants wifi !</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Utiliser un cable USB pour mettre à jour votre capteur.
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Allumez le capteur tout en court-circuitant le deuxième pad FLASH rectangulaire à partir du bord sur la face supérieure de la carte et du bouclier métallique du microcontrôleur
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Allumez le tracker tout en court-circuitant le pad FLASH circulaire sur le côté supérieur de la carte et le bouclier métallique du microcontrôleur
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Allumez le tracker tout en appuyant sur le bouton FLASH situé sur la partie supérieure de la carte
 firmware_tool-flashbtn_step-board_OTHER =
     Avant de flash le capteur, vous devrez probablement le mettre en mode bootloader.
     La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
     Si le processus de flash expire au début du flash, cela signifie probablement que le capteur n'était pas en mode bootloader
     Veuillez vous référer aux instructions de flash de votre carte pour savoir comment activer le mode boatloader
+firmware_tool-flash_method_ota-title = Flasher via Wi-Fi
 firmware_tool-flash_method_ota-devices = Appareils OTA détectés :
 firmware_tool-flash_method_ota-no_devices = Il n'y a aucune carte pouvant être mise à jour à l'aide d'OTA, assurez-vous d'avoir sélectionné le bon type de carte
+firmware_tool-flash_method_serial-title = Flasher via USB
 firmware_tool-flash_method_serial-wifi = Identifiants Wi-Fi :
 firmware_tool-flash_method_serial-devices-label = Appareils en série détectés :
 firmware_tool-flash_method_serial-devices-placeholder = Sélectionnez un appareil en série
@@ -1482,10 +1450,10 @@ firmware_tool-flashing_step-exit = Quitter
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = En attente de la création...
 firmware_tool-build-CREATING_BUILD_FOLDER = Création du dossier de création
-firmware_tool-build-DOWNLOADING_FIRMWARE = Téléchargement du micrologiciel
-firmware_tool-build-EXTRACTING_FIRMWARE = Extraction du micrologiciel
-firmware_tool-build-SETTING_UP_DEFINES = Configuration des définitions
+firmware_tool-build-DOWNLOADING_SOURCE = Téléchargement du code source
+firmware_tool-build-EXTRACTING_SOURCE = Extraction du code source
 firmware_tool-build-BUILDING = Création du micrologiciel
 firmware_tool-build-SAVING = Enregistrement du micrologiciel
 firmware_tool-build-DONE = Création terminée
@@ -1598,3 +1566,6 @@ error_collection_modal-description_v2 =
     Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
 error_collection_modal-cancel = Je ne veux pas
+
+## Tracking checklist section
+

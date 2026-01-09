@@ -22,12 +22,9 @@ import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
 import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
-import { DonePage } from './components/onboarding/pages/Done';
-import { EnterVRPage } from './components/onboarding/pages/EnterVR';
 import { HomePage } from './components/onboarding/pages/Home';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
-import { ResetTutorialPage } from './components/onboarding/pages/ResetTutorial';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
@@ -39,11 +36,8 @@ import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
-import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
-import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
 import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
@@ -61,6 +55,9 @@ import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
+import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
+import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
+import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -75,15 +72,15 @@ function Layout() {
 
   return (
     <>
-      <SerialDetectionModal></SerialDetectionModal>
-      <VersionUpdateModal></VersionUpdateModal>
-      <UnknownDeviceModal></UnknownDeviceModal>
+      <SerialDetectionModal />
+      <VersionUpdateModal />
+      <UnknownDeviceModal />
       <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
             path="/"
             element={
-              <MainLayout isMobile={isMobile}>
+              <MainLayout isMobile={isMobile} full>
                 <Home />
               </MainLayout>
             }
@@ -91,7 +88,7 @@ function Layout() {
           <Route
             path="/firmware-update"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <FirmwareUpdate />
               </MainLayout>
             }
@@ -99,8 +96,16 @@ function Layout() {
           <Route
             path="/vr-mode"
             element={
-              <MainLayout isMobile={isMobile}>
+              <MainLayout isMobile={isMobile} full>
                 <VRModePage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/checklist"
+            element={
+              <MainLayout isMobile={isMobile}>
+                <ChecklistPage />
               </MainLayout>
             }
           />
@@ -115,7 +120,7 @@ function Layout() {
           <Route
             path="/vrc-warnings"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <VRCWarningsPage />
               </MainLayout>
             }
@@ -135,6 +140,7 @@ function Layout() {
             <Route path="osc/vrchat" element={<VRCOSCSettings />} />
             <Route path="osc/vmc" element={<VMCSettings />} />
             <Route path="interface" element={<InterfaceSettings />} />
+            <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
           </Route>
           <Route
@@ -148,20 +154,10 @@ function Layout() {
             <Route path="home" element={<HomePage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
-            <Route
-              path="calibration-tutorial"
-              element={<CalibrationTutorialPage />}
-            />
-            <Route
-              path="assign-tutorial"
-              element={<AssignmentTutorialPage />}
-            />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
-            <Route path="enter-vr" element={<EnterVRPage />} />
-            <Route path="mounting/choose" element={<MountingChoose />}></Route>
+            <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
-            <Route path="reset-tutorial" element={<ResetTutorialPage />} />
             <Route
               path="body-proportions/auto"
               element={<AutomaticProportionsPage />}
@@ -175,9 +171,8 @@ function Layout() {
               element={<ScaledProportionsPage />}
             />
             <Route path="stay-aligned" element={<StayAlignedSetup />} />
-            <Route path="done" element={<DonePage />} />
           </Route>
-          <Route path="*" element={<TopBar></TopBar>}></Route>
+          <Route path="*" element={<TopBar />} />
         </Route>
       </SentryRoutes>
     </>
@@ -206,6 +201,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // don't show update stuff when on android
+    if (window.__ANDROID__?.isThere()) {
+      setUpdateFound('');
+      return;
+    }
     async function fetchReleases() {
       const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`
@@ -213,11 +213,11 @@ export default function App() {
         .then((res) => res.json())
         .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
 
-      if (
-        __VERSION_TAG__ &&
-        typeof releases[0].tag_name === 'string' &&
-        semver.gt(releases[0].tag_name, __VERSION_TAG__)
-      ) {
+      if (typeof releases[0].tag_name !== 'string') return;
+
+      const version = semver.coerce(releases[0].tag_name);
+
+      if (version && semver.gt(version, __VERSION_TAG__)) {
         setUpdateFound(releases[0].tag_name);
       }
     }
@@ -278,7 +278,7 @@ export default function App() {
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
       if (ev.key === 'F1') {
-        return open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
+        return openUrl(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
       }
     }
 
@@ -292,17 +292,15 @@ export default function App() {
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
             <OnboardingContextProvider>
-              <StatusProvider>
+              <TrackingChecklistProvider>
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
-                    {!websocketAPI.isConnected && (
-                      <ConnectionLost></ConnectionLost>
-                    )}
-                    {websocketAPI.isConnected && <Layout></Layout>}
+                    {!websocketAPI.isConnected && <ConnectionLost />}
+                    {websocketAPI.isConnected && <Layout />}
                   </div>
                 </VersionContext.Provider>
-              </StatusProvider>
+              </TrackingChecklistProvider>
             </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>

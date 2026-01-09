@@ -28,14 +28,14 @@ export function SkipSetupButton({
     <button
       type="button"
       className={classNames(
-        'text-background-40 hover:text-background-30',
-        'stroke-background-40 hover:stroke-background-30',
+        'text-background-10 hover:text-background-20',
+        'stroke-background-10 hover:stroke-background-20',
         'absolute xs:-top-10 xs:right-4 mobile:top-0 mobile:right-0'
       )}
       onClick={onClick}
     >
       <div className="flex flex-col justify-center items-center">
-        <EscapeIcon size={42}></EscapeIcon>
+        <EscapeIcon size={42} />
         <p className="text-standard">ESC</p>
       </div>
     </button>

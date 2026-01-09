@@ -24,12 +24,19 @@ version_update-close = 关闭
 
 ## Tips
 
-tips-find_tracker = 分不清哪个追踪器是哪个了？摇一摇它，对应的那个将被高亮显示。
+tips-find_tracker = 不确定哪个追踪器是哪个？在现实中摇动一个追踪器，对应的那个将在屏幕上高亮显示。
 tips-do_not_move_heels = 确保你的脚跟在录制的时候不会发生移动!
 tips-file_select = 拖放文档或 <u>浏览文档</u> 以使用
 tips-tap_setup = 你可以缓慢地敲击2次追踪器来选中它，而不是从菜单中选取。
 tips-turn_on_tracker = 如果使用的是 SlimeVR 官方的追踪器，请在将追踪器连接到电脑后再<b><em>打开追踪器的电源</em></b>！
 tips-failed_webgl = WebGL初始化失败
+
+## Units
+
+unit-meter = 米
+unit-foot = 英尺
+unit-inch = 英寸
+unit-cm = 厘米
 
 ## Body parts
 
@@ -95,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR 开发板
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -236,6 +245,10 @@ reset-mounting = 重置佩戴
 reset-mounting-feet = 重置脚部佩戴
 reset-mounting-fingers = 重置手指佩戴
 reset-yaw = 重置航向轴
+reset-error-no_feet_tracker = 未分配脚部追踪器
+reset-error-no_fingers_tracker = 未分配手指追踪器
+reset-error-mounting-need_full_reset = 佩戴校准前需要先执行完整重置
+reset-error-yaw-need_full_reset = 航向轴重置前需要先执行完整重置
 
 ## Serial detection stuff
 
@@ -255,10 +268,12 @@ navbar-trackers_assign = 追踪器分配
 navbar-mounting = 佩戴校准
 navbar-onboarding = 向导
 navbar-settings = 设置
+navbar-connect_trackers = 连接追踪器
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = 录制 BVH 文件
+bvh-stop_recording = 保存 BVH 记录
 bvh-recording = 录制中...
 bvh-save_title = 保存BVH记录
 
@@ -277,7 +292,7 @@ widget-overlay-is_mirrored_label = 镜像显示覆盖层
 
 widget-drift_compensation-clear = 清除漂移补偿数据
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 清除重置佩戴
 
@@ -395,13 +410,15 @@ tracker-settings-name_section-label = 追踪器名称
 tracker-settings-forget = 忘记追踪器
 tracker-settings-forget-description = 从 SlimeVR 服务器中移除该追踪器，并在服务器重启前不再连接这一追踪器。追踪器的配置信息不会被清除。
 tracker-settings-forget-label = 忘记追踪器
-tracker-settings-update-unavailable = 无法升级（DIY）
+tracker-settings-update-unavailable-v2 = 未找到可用版本
+tracker-settings-update-incompatible = 电路板不兼容，无法升级。
 tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
 tracker-settings-update-blocked = 更新不可用。没有其他可用版本
-tracker-settings-update-available = { $versionName } 现在可用
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 固件版本
+tracker-settings-current-version = 当前版本
+tracker-settings-latest-version = 最新版本
 
 ## Tracker part card info
 
@@ -467,6 +484,7 @@ mounting_selection_menu-close = 关闭
 
 settings-sidebar-title = 设置
 settings-sidebar-general = 通用设置
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = 追踪器设置
 settings-sidebar-stay_aligned = 持续校准
 settings-sidebar-fk_settings = FK 设置
@@ -474,9 +492,12 @@ settings-sidebar-gesture_control = 手势控制
 settings-sidebar-interface = 交互界面
 settings-sidebar-osc_router = OSC 路由
 settings-sidebar-osc_trackers = VRChat OSC 追踪器
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 串口控制台
 settings-sidebar-appearance = 外观
+settings-sidebar-home = 主界面
+settings-sidebar-checklist = 追踪检查清单
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行为
 settings-sidebar-firmware-tool = DIY固件工具
@@ -543,7 +564,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-description =
     适用于追踪器在偏航轴上持续旋转的场景。
 settings-general-tracker_mechanics-drift_compensation-prediction-label = 预测式漂移补偿
 settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>警告：</b> 仅在需要经常重置偏航角 
+    <b>警告：</b> 仅在需要经常重置偏航角
     (大概5~10分钟左右需要重置一次) 时使用漂移补偿。
     
     一些可能需要此补偿的 IMU 包括：
@@ -602,13 +623,16 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 开启脚部佩戴重置。（佩戴重置时需要踮起脚尖）
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 脚部佩戴重置
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 强制脚部佩戴重置
 settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 强制约束
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 使用约束修正
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = 当关节旋转超过人体骨骼角度限制时进行修正
+settings-general-fk_settings-ik = 位置数据
+settings-general-fk_settings-ik-use_position = 使用位置数据
+settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
 settings-general-fk_settings-arm_fk = 手臂追踪
 settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
 settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
@@ -710,9 +734,6 @@ settings-general-interface-connected_trackers_warning-label = 退出时，有追
 ## Behavior settings
 
 settings-interface-behavior = 行为
-settings-general-interface-dev_mode = 开发者模式
-settings-general-interface-dev_mode-description = 如果你需要深入的资料或对连接的追踪器进行进阶调整，开启此模式将会非常有用。
-settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
 settings-general-interface-use_tray-label = 最小化至任务栏
@@ -753,12 +774,16 @@ settings-serial-factory_reset-warning =
     这意味着 Wi-Fi 凭据和校准数据 <b>都将丢失！</b>
 settings-serial-factory_reset-warning-ok = 我已知晓
 settings-serial-factory_reset-warning-cancel = 取消
-settings-serial-get_infos = 获取信息
 settings-serial-serial_select = 选择串行端口
 settings-serial-auto_dropdown_item = 自动
 settings-serial-get_wifi_scan = 扫描可用WiFi
 settings-serial-file_type = 纯文本
 settings-serial-save_logs = 保存到文件
+settings-serial-send_command = 发送
+settings-serial-send_command-placeholder = 输入指令...
+settings-serial-send_command-warning = <b>警告:</b>运行串口命令可能导致数据丢失或使追踪器无法正常工作。
+settings-serial-send_command-warning-ok = 我已知晓
+settings-serial-send_command-warning-cancel = 取消
 
 ## OSC router settings
 
@@ -855,6 +880,11 @@ settings-osc-vmc-mirror_tracking = 镜像追踪
 settings-osc-vmc-mirror_tracking-description = 水平镜像追踪结果
 settings-osc-vmc-mirror_tracking-label = 镜像追踪
 
+## Common OSC settings
+
+settings-osc-common-network-ports_match_error = OSC路由的输入和输出端口不能相同！
+settings-osc-common-network-port_banned_error = 无法使用端口{ $port } !
+
 ## Advanced settings
 
 settings-utils-advanced = 高级选项
@@ -888,6 +918,18 @@ settings-utils-advanced-open_logs = 日志文件夹
 settings-utils-advanced-open_logs-description = 在文件管理器中打开SlimeVR的日志文件夹，查看SlimeVR的日志文件。
 settings-utils-advanced-open_logs-label = 打开文件夹
 
+## Home Screen
+
+settings-home-list-layout = 追踪器列表布局
+settings-home-list-layout-desc = 选择主界面的显示布局
+settings-home-list-layout-grid = 网格
+settings-home-list-layout-table = 列表
+
+## Tracking Checlist
+
+settings-tracking_checklist-active_steps = 启用的检查项
+settings-tracking_checklist-active_steps-desc = 追踪检查清单中所有项目的列表。您可以禁用不需要的步骤。
+
 ## Setup/onboarding menu
 
 onboarding-skip = 跳过设置
@@ -903,11 +945,13 @@ onboarding-setup_warning-cancel = 继续设置
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 返回简介
-onboarding-wifi_creds = 输入 Wi-Fi 凭据
+onboarding-wifi_creds-v2 = 通过 Wi-Fi 连接
 # This cares about multilines
-onboarding-wifi_creds-description =
-    追踪器将使用这些凭据连接到 Wi-Fi
-    请使用当前连接到 Wi-Fi 的凭据
+onboarding-wifi_creds-description-v2 =
+    大多数追踪器（例如官方的 SlimeVR 追踪器）都通过 Wi-Fi 连接服务器。
+    请输入当前设备连接的网络的 Wi-Fi 凭证。
+    
+    请确保输入的是 2.4GHz 频段的 Wi-Fi 凭证！
 onboarding-wifi_creds-skip = 跳过 Wi-Fi 设置
 onboarding-wifi_creds-submit = 提交！
 onboarding-wifi_creds-ssid =
@@ -917,6 +961,10 @@ onboarding-wifi_creds-ssid-required = Wi-Fi 名称为必填项
 onboarding-wifi_creds-password =
     .label = 密码
     .placeholder = 输入密码
+onboarding-wifi_creds-dongle-title = 通过接收器连接
+onboarding-wifi_creds-dongle-description = 如果你的追踪器附带接收器，将其插入电脑即可直接开始使用！
+onboarding-wifi_creds-dongle-wip = 此部分仍在开发中。将来会推出用于管理接收器连接追踪器的专属页面。
+onboarding-wifi_creds-dongle-continue = 继续，使用接收器
 
 ## Mounting setup
 
@@ -947,13 +995,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = 欢迎来到 SlimeVR
 onboarding-home-start = 我准备好了！
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = 返回到追踪器分配
-onboarding-enter_vr-title = VR 时间到！
-onboarding-enter_vr-description = 穿戴好所有的追踪器，开始快乐 VR 吧！
-onboarding-enter_vr-ready = 我准备好了
 
 ## Setup done
 
@@ -1027,7 +1068,8 @@ onboarding-assignment_tutorial-done = 我把贴纸和绑带都弄好了！
 
 onboarding-assign_trackers-back = 返回 Wi-Fi 凭据设置
 onboarding-assign_trackers-title = 分配追踪器
-onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里。单击要放置追踪器的部位
+onboarding-assign_trackers-description = 让我们选择追踪器的佩戴位置。点击对应部位即可分配。
+onboarding-assign_trackers-unassign_all = 取消分配所有追踪器
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1162,6 +1204,8 @@ onboarding-automatic_mounting-done-restart = 再试一次
 onboarding-automatic_mounting-mounting_reset-title = 佩戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 双腿弯曲以滑雪的姿势蹲下，上身向前倾斜，手臂弯曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 按下佩戴重置按钮并等待 3 秒钟，然后追踪器的佩戴方向将被重置。
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. 双脚朝前，踮起脚尖站立。或者，您也可以坐在椅子上完成这个动作。
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. 点击“脚部校准”按钮并等待 3 秒，追踪器的佩戴方向将会重置。
 onboarding-automatic_mounting-preparation-title = 准备
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 按下“完全重置”按钮。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直并向前看，双臂放在身体两侧。
@@ -1169,10 +1213,11 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿势，直到 3
 onboarding-automatic_mounting-put_trackers_on-title = 穿戴好追踪器
 onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴方向，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
 onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
+onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 返回重置教程
+onboarding-manual_proportions-back-scaled = 返回使用缩放比例
 onboarding-manual_proportions-title = 手动调整身体比例
 onboarding-manual_proportions-fine_tuning_button = 自动微调身体比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 请连接 VR头戴显示器 以使用自动微调
@@ -1266,30 +1311,32 @@ onboarding-automatic_proportions-smol_warning =
     <b>请重新进行测量并确保测量结果是正确的。</b>
 onboarding-automatic_proportions-smol_warning-cancel = 返回
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 标准身体比例
-onboarding-scaled_proportions-description = 为了让 SlimeVR 追踪器正常使用，我们需要知道你的骨头的长度。将会使用人体平均骨骼比例，并缩放至您的身高。
-onboarding-scaled_proportions-manual_height-title = 配置您的身高
-onboarding-scaled_proportions-manual_height-description-v2 = 此身高将用作您身体比例的基准。
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 当前未连接到 SlimeVR，因此不能基于您的头戴显示器进行测量。 <b>请连接后再继续操作或查看文档！</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 您的身高为
-onboarding-scaled_proportions-manual_height-estimated_height = 估计您的头显高度为：
-onboarding-scaled_proportions-manual_height-next_step = 保存并继续
-onboarding-scaled_proportions-manual_height-warning =
-    您当前正在手动设置缩放身体比例！
-    <b>建议只在您不使用头戴显示器时使用此模式</b>
-    
-    为了能够使用自动缩放身体比例，请：
-onboarding-scaled_proportions-manual_height-warning-no_hmd = 连接 VR 头戴显示器
-onboarding-scaled_proportions-manual_height-warning-no_controllers = 确保您的控制器已连接并正确分配到手部
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 重置您的身体比例
-onboarding-scaled_proportions-reset_proportion-description = 为了根据您的身高设置身体比例，您现在需要重置所有身体比例。这将清除您先前配置的所有身体比例并提供一个基础设置。
-onboarding-scaled_proportions-done-title = 身体比例已设置
-onboarding-scaled_proportions-done-description = 身体比例已根据您的身高进行设置。
+onboarding-user_height-title = 你的身高是多少？
+onboarding-user_height-description = 我们需要你的身高来计算躯干比例，以准确呈现你的动作。你可以让 SlimeVR 自动计算身高，也可以手动输入。
+onboarding-user_height-need_head_tracker = 进行校准需要具备定位功能的头戴显示器与控制器。
+onboarding-user_height-calculate = 自动计算我的身高
+onboarding-user_height-next_step = 保存并继续
+onboarding-user_height-manual-proportions = 手动调整躯干比例
+onboarding-user_height-calibration-title = 校准进度
+onboarding-user_height-calibration-RECORDING_FLOOR = 用控制器的前端触碰地面
+onboarding-user_height-calibration-WAITING_FOR_RISE = 回到站姿
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = 回到站姿并向前看
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = 确保你的头部水平
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = 不要往地面看
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = 不要往高处看
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = 确保控制器方向朝下
+onboarding-user_height-calibration-RECORDING_HEIGHT = 重新站直并保持姿势不动！
+onboarding-user_height-calibration-DONE = 完成！
+onboarding-user_height-calibration-ERROR_TIMEOUT = 校准超时，请重试。
+onboarding-user_height-calibration-ERROR_TOO_HIGH = 检测到的用户身高数值过大，请重试。
+onboarding-user_height-calibration-ERROR_TOO_SMALL = 检测到的用户身高数值过小。请确保在校准结束时身体站直并平视前方。
+onboarding-user_height-calibration-error = 校准失败
+onboarding-user_height-manual-tip = 在调整身高时，尝试不同姿势，看看骨架是否与你的身体动作匹配。
+onboarding-user_height-reset-warning =
+    <b>警告：</b> 这会将您的身体比例重置为仅基于身高的默认比例。
+    您确定要执行此操作吗？
 
 ## Stay Aligned setup
 
@@ -1328,6 +1375,8 @@ onboarding-stay_aligned-done = 完成
 ## Home
 
 home-no_trackers = 未检测到或未分配追踪器
+home-settings = 主界面设置
+home-settings-close = 关闭
 
 ## Trackers Still On notification
 
@@ -1364,81 +1413,45 @@ firmware_tool = DIY固件工具
 firmware_tool-description = 允许您配置和烧录 DIY 追踪器固件
 firmware_tool-not_available = 哦不，固件工具目前不可用。稍后再来！
 firmware_tool-not_compatible = 固件工具与此版本的服务端不兼容。请更新您的服务端！
-firmware_tool-board_step = 选择您的开发板
-firmware_tool-board_step-description = 选择下列开发板之一
-firmware_tool-board_pins_step = 检查引脚
-firmware_tool-board_pins_step-description =
-    请验证所选引脚是否正确。
-    如果您遵循了 SlimeVR 文档，则默认值应该是正确的
-firmware_tool-board_pins_step-enable_led = 启用 LED
-firmware_tool-board_pins_step-led_pin =
-    .label = LED 引脚
-    .placeholder = 输入LED引脚的编号
-firmware_tool-board_pins_step-battery_type = 选择电池测量电路类型
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = 使用外接电阻与片内ADC测量（默认）
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = 使用片内低电量告警电路
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = 使用片内低电量告警电路与外接MCP3021测量
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = 使用外接MCP3021测量
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = 电池检测引脚
-    .placeholder = 输入电池检测引脚的编号
-firmware_tool-board_pins_step-battery_resistor =
-    .label = 电池外接串联电阻（欧姆）
-    .placeholder = 输入电池串联电阻的阻值
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = 开发板载对地分压电阻R1（欧姆）
-    .placeholder = 请输入开发板载对地分压电阻 R1 的值。
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = 开发板载对输入分压电阻 R2（欧姆）
-    .placeholder = 请输入开发板载对输入分压电阻 R2 的值。
-firmware_tool-add_imus_step = 添加您的 IMU
-firmware_tool-add_imus_step-description =
-    请添加您的追踪器所配备的 IMU 传感器。  
-    如果您遵循了 SlimeVR 文档，默认值应该是正确的。
-firmware_tool-add_imus_step-imu_type-label = IMU 类型
-firmware_tool-add_imus_step-imu_type-placeholder = 选择 IMU 类型
-firmware_tool-add_imus_step-imu_rotation =
-    .label = 追踪器旋转（度）
-    .placeholder = 追踪器旋转角度
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL 引脚
-    .placeholder = SCL 引脚编号
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA 引脚
-    .placeholder = SDA 引脚编号
-firmware_tool-add_imus_step-int_pin =
-    .label = INT 引脚
-    .placeholder = INT 引脚编号
-firmware_tool-add_imus_step-optional_tracker =
-    .label = 此 IMU 为可选扩展
-firmware_tool-add_imus_step-show_less = 显示更少
-firmware_tool-add_imus_step-show_more = 显示更多
-firmware_tool-add_imus_step-add_more = 添加更多 IMU
-firmware_tool-select_firmware_step = 选择固件版本
-firmware_tool-select_firmware_step-description = 请选择您要使用的固件版本
-firmware_tool-select_firmware_step-show-third-party =
-    .label = 显示第三方固件
+firmware_tool-select_source = 选择要刷写的固件
+firmware_tool-select_source-description = 选择要在电路板上刷写的固件
+firmware_tool-select_source-error = 无法加载固件源代码
+firmware_tool-select_source-board_type = 电路板类型
+firmware_tool-select_source-firmware = 固件来源
+firmware_tool-select_source-version = 固件版本
+firmware_tool-select_source-official = 官方
+firmware_tool-select_source-dev = 开发版
+firmware_tool-board_defaults = 配置电路板
+firmware_tool-board_defaults-description = 设置引脚与其他和硬件相关的配置
+firmware_tool-board_defaults-add = 新增
+firmware_tool-board_defaults-reset = 恢复默认设置
+firmware_tool-board_defaults-error-required = 必填字段
+firmware_tool-board_defaults-error-format = 格式无效
+firmware_tool-board_defaults-error-format-number = 不是数字
 firmware_tool-flash_method_step = 固件烧录方式
 firmware_tool-flash_method_step-description = 请选择您要使用的固件烧录方式
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = 使用无线方式。您的追踪器将通过 Wi-Fi 更新固件。仅适用于已设置好的追踪器。
-firmware_tool-flash_method_step-serial =
-    .label = 串口
-    .description = 使用 USB 数据线更新您的追踪器。
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = 选择无线OTA更新方式。你的追踪器将会使用Wi-Fi来更新固件。只在已设置完成的追踪器上生效。
+firmware_tool-flash_method_step-ota-info = 将会使用你的Wi-Fi凭证来刷写追踪器的固件并确保一切正常。<b>我们不会存储你的Wi-Fi凭证!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = 使用USB线连接来更新你的追踪器。
 firmware_tool-flashbtn_step = 按下启动/Boot按钮
 firmware_tool-flashbtn_step-description = 在进入下一步之前，您需要做几件事情。
 firmware_tool-flashbtn_step-board_SLIMEVR = 关闭追踪器，拆下外壳（如果有的话），使用 USB 数据线连接到计算机，然后根据您的 SlimeVR 电路板版本执行以下步骤之一：
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 在短接电路板正面边缘第二个矩形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 在短接电路板正面圆形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 在按住电路板正面的 FLASH 按钮的时候，打开追踪器的电源。
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = 保持短接电路板正面边缘第二个矩形 FLASH 焊盘和单片机模块的金属屏蔽罩，同时打开追踪器电源。追踪器的指示灯将会短暂闪烁。
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = 保持短接电路板正面圆形 FLASH 焊盘和单片机模块的金属屏蔽罩，同时打开追踪器电源。追踪器的指示灯将会短暂闪烁。
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = 按住电路板正面的 FLASH 按钮的同时打开追踪器电源。追踪器的指示灯将会短暂闪烁。
 firmware_tool-flashbtn_step-board_OTHER =
-    在烧录固件之前，您可能需要将追踪器置于bootloader模式。  
-    通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。  
-    如果固件烧录过程在开始时超时，这通常表示追踪器没有处于bootloader模式。  
+    在烧录固件之前，您可能需要将追踪器置于bootloader模式。
+    通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。
+    如果固件烧录过程在开始时超时，这通常表示追踪器没有处于bootloader模式。
     请参考您的追踪器电路板的固件烧录说明，了解如何进入bootloader模式。
+firmware_tool-flash_method_ota-title = 通过Wi-Fi刷写
 firmware_tool-flash_method_ota-devices = 检测到的 OTA 设备：
 firmware_tool-flash_method_ota-no_devices = 没有可以使用 OTA 更新的电路板，请确保选择了正确的电路板类型
+firmware_tool-flash_method_serial-title = 通过USB刷写
 firmware_tool-flash_method_serial-wifi = Wi-Fi 凭证：
 firmware_tool-flash_method_serial-devices-label = 检测到的串口设备：
 firmware_tool-flash_method_serial-devices-placeholder = 选择串口设备
@@ -1453,10 +1466,10 @@ firmware_tool-flashing_step-exit = 退出
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = 等待构建中....
 firmware_tool-build-CREATING_BUILD_FOLDER = 正在创建 build 文件夹
-firmware_tool-build-DOWNLOADING_FIRMWARE = 正在下载固件源文件
-firmware_tool-build-EXTRACTING_FIRMWARE = 正在解压固件
-firmware_tool-build-SETTING_UP_DEFINES = 正在配置固件 define 参数
+firmware_tool-build-DOWNLOADING_SOURCE = 正在下载源代码
+firmware_tool-build-EXTRACTING_SOURCE = 正在解压源代码
 firmware_tool-build-BUILDING = 正在构建固件
 firmware_tool-build-SAVING = 正在保存构建结果
 firmware_tool-build-DONE = 构建完成
@@ -1569,3 +1582,49 @@ error_collection_modal-description_v2 =
     您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了
+
+## Tracking checklist section
+
+tracking_checklist = 追踪检查清单
+tracking_checklist-settings = 追踪检查清单设置
+tracking_checklist-settings-close = 关闭
+tracking_checklist-status-incomplete = 使用 SlimeVR 前的准备工作尚未完成！
+tracking_checklist-status-partial = 你有 { $count } 个警告！
+tracking_checklist-status-complete = 已经准备好使用 SlimeVR！
+tracking_checklist-MOUNTING_CALIBRATION = 进行佩戴校准
+tracking_checklist-FEET_MOUNTING_CALIBRATION = 进行脚部佩戴校准
+tracking_checklist-FULL_RESET = 进行完整重置
+tracking_checklist-FULL_RESET-desc = 有些追踪器需要进行重置
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未在运行
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未在运行。你要将追踪器用于 VR 吗？
+tracking_checklist-STEAMVR_DISCONNECTED-open = 启动 SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = 校准追踪器
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 您尚未执行追踪器校准。请将（黄色高亮显示的）追踪器放置在平稳表面上，并静置数秒。
+tracking_checklist-TRACKER_ERROR = 追踪器出现错误
+tracking_checklist-TRACKER_ERROR-desc = 有追踪器发生错误，请重启黄色高亮标记的追踪器。
+tracking_checklist-VRCHAT_SETTINGS = 调整 VRChat 设置
+tracking_checklist-VRCHAT_SETTINGS-desc = VRChat 的设置有问题！这会影响到在 VRChat 中使用 SlimeVR 的体验。
+tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告页面
+tracking_checklist-UNASSIGNED_HMD = VR 头戴显示器未分配给头部
+tracking_checklist-UNASSIGNED_HMD-desc = VR 头戴显示器应该被分配为头部追踪器。
+tracking_checklist-NETWORK_PROFILE_PUBLIC = 更改网络配置文件类型
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    检测到您的部分网卡被设为“公用网络”：
+    { $adapters }
+    这可能会影响 SlimeVR 的正常运行。
+    <PublicFixLink>点击此处查看如何更改设置。</PublicFixLink>
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 打开控制面板
+tracking_checklist-STAY_ALIGNED_CONFIGURED = 调整持续校准设置
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 记录持续校准所使用的姿势以减缓漂移现象
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = 打开持续校准设置
+tracking_checklist-ignore = 忽略
+preview-mocap_mode_soon = 动作捕捉模式（即将推出™）
+preview-disable_render = 禁用预览
+preview-disabled_render = 预览已禁用
+toolbar-mounting_calibration = 佩戴校准
+toolbar-mounting_calibration-default = 身体
+toolbar-mounting_calibration-feet = 脚部
+toolbar-mounting_calibration-fingers = 手指
+toolbar-drift_reset = 漂移重置
+toolbar-assigned_trackers = { $count } 个已分配的追踪器
+toolbar-unassigned_trackers = { $count } 个未分配的追踪器

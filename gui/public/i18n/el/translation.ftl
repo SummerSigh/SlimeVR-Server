@@ -18,6 +18,9 @@ websocket-connection_lost = Η σύνδεση μεταξύ του διακομι
 tips-find_tracker = Δεν είστε σίγουροι ποιος ανιχνευτής είναι ποιος; Κουνήστε έναν ανιχνευτή και θα επισημάνει το αντίστοιχο στοιχείο.
 tips-do_not_move_heels = Βεβαιωθείτε ότι οι φτέρνες σας δεν κινούνται κατά την εγγραφή!
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Μη εκχωρημένο
@@ -41,13 +44,16 @@ body_part-LEFT_UPPER_LEG = Αριστερός μηρός
 body_part-LEFT_LOWER_LEG = Αριστερός αστράγαλος
 body_part-LEFT_FOOT = Αριστερό πόδι
 
+## BoardType
+
+
 ## Proportions
 
 skeleton_bone-NONE = Τίποτα
 skeleton_bone-HEAD = Μετατόπιση κεφαλής
 skeleton_bone-NECK = Μήκος λαιμού
-skeleton_bone-CHEST = Μήκος στήθους
 skeleton_bone-CHEST_OFFSET = Μετατόπιση στήθους
+skeleton_bone-CHEST = Μήκος στήθους
 skeleton_bone-WAIST = Μήκος μέσης
 skeleton_bone-HIP = Μήκος γοφών
 skeleton_bone-HIP_OFFSET = Μετατόπιση γοφών
@@ -106,6 +112,9 @@ widget-overlay-is_mirrored_label = Εμφάνιση υπέρθεσης ως κα
 
 widget-drift_compensation-clear = Επαναφορά αντιστάθμισης drift
 
+## Widget: Clear Mounting calibration
+
+
 ## Widget: Developer settings
 
 widget-developer_mode = Λειτουργία προγραμματιστή
@@ -122,6 +131,9 @@ widget-developer_mode-more_info = Περισσότερες πληροφορίε�
 widget-imu_visualizer = Περιστροφή
 widget-imu_visualizer-rotation_raw = Ακατέργαστο
 widget-imu_visualizer-rotation_preview = Προεπισκόπηση
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -231,8 +243,6 @@ tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } αριστερό 
 settings-general-steamvr = SteamVR
 settings-general-steamvr-trackers-waist = Μέση
 settings-general-steamvr-trackers-chest = Στήθος
-settings-general-steamvr-trackers-feet = Πόδια
-settings-general-steamvr-trackers-hands = Χέρια
 
 ## Tracker mechanics
 
@@ -243,7 +253,13 @@ settings-general-steamvr-trackers-hands = Χέρια
 ## Gesture control settings (tracker tapping)
 
 
-## Interface settings
+## Appearance settings
+
+
+## Notification settings
+
+
+## Behavior settings
 
 
 ## Serial settings
@@ -260,6 +276,18 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## VMC OSC settings
 
 
+## Common OSC settings
+
+
+## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 
@@ -270,9 +298,6 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -302,17 +327,53 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Tracker automatic mounting setup
 
 
-## Tracker proportions method choose
-
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 
 ## Tracker automatic proportions setup
 
 
+## User height calibration
+
+
+## Stay Aligned setup
+
+
 ## Home
 
 
+## Trackers Still On notification
+
+
 ## Status system
+
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
+
+## Error collection consent modal
+
+
+## Tracking checklist section
 

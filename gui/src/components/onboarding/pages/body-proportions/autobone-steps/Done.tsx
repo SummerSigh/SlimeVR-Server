@@ -12,7 +12,7 @@ export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
         <Typography variant="section-title">
           {l10n.getString('onboarding-automatic_proportions-done-title')}
         </Typography>
-        <Typography color="secondary">
+        <Typography>
           {l10n.getString('onboarding-automatic_proportions-done-description')}
         </Typography>
       </div>
@@ -24,7 +24,7 @@ export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
           </Button>
         )}
       </div>
-      <div className="flex flex-grow max-h-[450px]">
+      <div className="flex flex-grow max-h-[450px] w-full">
         <SkeletonVisualizerWidget />
       </div>
     </div>

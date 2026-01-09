@@ -5,10 +5,11 @@ import {
 } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
-import { createStore, Store } from '@tauri-apps/plugin-store';
+import { load, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { isTauri } from '@tauri-apps/api/core';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface WindowConfig {
   width: number;
@@ -26,6 +27,7 @@ export enum AssignMode {
 }
 
 export interface Config {
+  uuid: string;
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
@@ -39,13 +41,15 @@ export interface Config {
   fonts: string[];
   useTray: boolean | null;
   mirrorView: boolean;
-  assignMode: AssignMode;
+  assignMode: AssignMode | null;
   discordPresence: boolean;
   errorTracking: boolean | null;
   decorations: boolean;
-  showNavbarOnboarding: boolean;
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
+  homeLayout: 'default' | 'table';
+  skeletonPreview: boolean;
+  lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
 }
 
 export interface ConfigContext {
@@ -55,6 +59,7 @@ export interface ConfigContext {
 }
 
 export const defaultConfig: Config = {
+  uuid: uuidv4(),
   lang: 'en',
   debug: false,
   doneOnboarding: false,
@@ -67,28 +72,30 @@ export const defaultConfig: Config = {
   fonts: ['poppins'],
   useTray: null,
   mirrorView: true,
-  assignMode: AssignMode.Core,
+  assignMode: null,
   discordPresence: false,
   errorTracking: null,
   decorations: false,
-  showNavbarOnboarding: true,
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   bvhDirectory: null,
+  homeLayout: 'default',
+  skeletonPreview: true,
+  lastUsedProportions: null,
 };
 
 interface CrossStorage {
-  set(key: string, value: string): Promise<void>;
-  get(key: string): Promise<string | null>;
+  set(key: string, value: unknown): Promise<void>;
+  get<T>(key: string): Promise<T | undefined>;
 }
 
 const localStore: CrossStorage = {
-  get: async (key) => localStorage.getItem(key),
-  set: async (key, value) => localStorage.setItem(key, value),
+  get: async <T>(key: string) => (localStorage.getItem(key) as T) ?? undefined,
+  set: async (key, value) => localStorage.setItem(key, value as string),
 };
 
 const store: CrossStorage = isTauri()
-  ? await createStore('gui-settings.dat', { autoSave: 100 as never })
+  ? await load('gui-settings.dat', { autoSave: 100, defaults: {} })
   : localStore;
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -99,7 +106,7 @@ function fallbackToDefaults(loadedConfig: any): Config {
 // allows to load everything before the first render
 export const loadConfig = async () => {
   try {
-    const migrated = await store.get('configMigratedToTauri');
+    const migrated = await store.get<string>('configMigratedToTauri');
     if (!migrated) {
       const oldConfig = localStorage.getItem('config.json');
 
@@ -108,18 +115,21 @@ export const loadConfig = async () => {
       store.set('configMigratedToTauri', 'true');
     }
 
-    const json = await store.get('config.json');
+    const json = await store.get<string>('config.json');
 
     if (!json) throw new Error('Config has ceased existing for some reason');
 
     const loadedConfig = fallbackToDefaults(JSON.parse(json));
-    // set(loadedConfig);
-    // setLoading(false);
+
+    if (!loadedConfig.uuid) {
+      // Make sure the config always has a uuid
+      loadedConfig.uuid = uuidv4();
+      await store.set('config.json', JSON.stringify(loadedConfig));
+    }
+
     return loadedConfig;
   } catch (e) {
     error(e);
-    // setConfig(defaultConfig);
-    // setLoading(false);
     return null;
   }
 };

@@ -27,12 +27,12 @@ export function MountingResetStep({
             )}
           </Typography>
           <div className="flex flex-col gap-2">
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-automatic_mounting-mounting_reset-step-0'
               )}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-automatic_mounting-mounting_reset-step-1'
               )}
@@ -58,10 +58,10 @@ export function MountingResetStep({
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
-            size="small"
             type={ResetType.Mounting}
+            group="default"
             onReseted={nextStep}
-          ></ResetButton>
+          />
         </div>
       </div>
       {!isMobile && (

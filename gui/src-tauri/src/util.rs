@@ -1,17 +1,14 @@
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::{
-	env,
 	ffi::{OsStr, OsString},
 	io::Write,
-	path::{Path, PathBuf},
+	path::PathBuf,
 	process::{Child, Stdio},
 };
 
 use clap::Parser;
 use const_format::concatcp;
-use flexi_logger::{style, DeferredNow};
-use log::Record;
 use shadow_rs::shadow;
 use tempfile::Builder;
 
@@ -47,37 +44,13 @@ const MODIFIED: &str = if build::GIT_CLEAN { "" } else { "-dirty" };
 )]
 pub struct Cli {
 	#[clap(short, long)]
-	display_console: bool,
+	pub display_console: bool,
 	#[clap(long)]
-	launch_from_path: Option<PathBuf>,
+	pub launch_from_path: Option<PathBuf>,
+	#[clap(long)]
+	pub skip_server_start_if_running: bool,
 	#[clap(flatten)]
 	verbose: clap_verbosity_flag::Verbosity,
-}
-
-pub fn is_valid_path(path: &Path) -> bool {
-	path.join("slimevr.jar").exists()
-}
-
-pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	let paths = [
-		cli.launch_from_path,
-		// AppImage passes the fakeroot in `APPDIR` env var.
-		env::var_os("APPDIR").map(|a| PathBuf::from(a).join("usr/share/slimevr/")),
-		env::current_dir().ok(),
-		// getcwd in Mac can't be trusted, so let's get the executable's path
-		env::current_exe()
-			.map(|mut f| {
-				f.pop();
-				f
-			})
-			.ok(),
-		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
-		// For flatpak container
-		Some(PathBuf::from("/app/share/slimevr/")),
-		Some(PathBuf::from("/usr/share/slimevr/")),
-	];
-
-	paths.into_iter().flatten().find(|x| is_valid_path(x))
 }
 
 pub fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
@@ -109,6 +82,21 @@ pub fn show_error(text: &str) -> bool {
 		.set_level(MessageLevel::Error)
 		.show()
 		== MessageDialogResult::Ok
+}
+
+pub fn get_log_dir(context: &tauri::Context) -> tauri::Result<PathBuf> {
+	use tauri::Error;
+	#[cfg(target_os = "macos")]
+	let path = dirs_next::home_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join("Library/Logs").join(&context.config().identifier))?;
+
+	#[cfg(not(target_os = "macos"))]
+	let path = dirs_next::data_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join(&context.config().identifier).join("logs"))?;
+
+	Ok(path)
 }
 
 #[cfg(mobile)]
@@ -217,32 +205,4 @@ pub fn valid_java_paths() -> Vec<(OsString, i32)> {
 				.filter(|(_p, code)| *code >= MINIMUM_JAVA_VERSION)
 		})
 		.collect()
-}
-
-pub fn logger_format(
-	w: &mut dyn std::io::Write,
-	_now: &mut DeferredNow,
-	record: &Record,
-	ansi: bool,
-) -> Result<(), std::io::Error> {
-	let level = record.level();
-	let module_path = record.module_path().unwrap_or("<unnamed>");
-	// Optionally print target
-	let target = if module_path.starts_with(record.target()) {
-		"".to_string()
-	} else {
-		format!(", {}", record.target())
-	};
-	// A toggle for ansi formatting, mainly disabled for file logs, but enabled for terminal logs.
-	if ansi {
-		write!(
-			w,
-			"{} [{}{target}] {}",
-			style(level).paint(level.to_string()),
-			module_path,
-			style(level).paint(record.args().to_string())
-		)
-	} else {
-		write!(w, "{} [{}{target}] {}", level, module_path, record.args())
-	}
 }

@@ -31,6 +31,9 @@ tips-tap_setup = Puoi toccare lentamente 2 volte il tracker per sceglierlo invec
 tips-turn_on_tracker = Stai utilizzando i tracker ufficiali di SlimeVR? Ricordati di <b><em>accendere il tuo tracker</em></b> dopo averlo collegato al PC!
 tips-failed_webgl = Inizializzazione WebGL fallita.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Non assegnato
@@ -175,7 +178,7 @@ skeleton_bone-FOOT_SHIFT = Correzione per i piedi
 skeleton_bone-FOOT_SHIFT-desc =
     Questo valore è la distanza orizzontale dal ginocchio alla caviglia.
     Tiene conto del fatto che la parte inferiore delle gambe va all'indietro quando si sta in piedi.
-    Per regolarla, impostare la lunghezza dei piedi su 0, eseguire un reset completo e modificarla 
+    Per regolarla, impostare la lunghezza dei piedi su 0, eseguire un reset completo e modificarla
     finché i piedi virtuali di non si allineano al centro delle caviglie.
 skeleton_bone-SKELETON_OFFSET = Correzione per lo scheletro
 skeleton_bone-SKELETON_OFFSET-desc =
@@ -278,7 +281,7 @@ widget-overlay-is_mirrored_label = Mostra Overlay come specchio
 
 widget-drift_compensation-clear = Rimuovi compensazione per il drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Cancella tutti i ripristini del posizionamento
 
@@ -396,10 +399,8 @@ tracker-settings-name_section-label = Nome del tracker
 tracker-settings-forget = Dimentica il tracker
 tracker-settings-forget-description = Rimuove il tracker dal SlimeVR server e impedisce che si riconnetta ad fino al riavvio del server. Le impostazioni del tracker non andranno perse.
 tracker-settings-forget-label = Dimentica il tracker
-tracker-settings-update-unavailable = Non può essere aggiornata (fai da te)
 tracker-settings-update-low-battery = Non è possibile aggiornare. Batteria inferiore al 50%
 tracker-settings-update-up_to_date = Aggiornata
-tracker-settings-update-available = { $versionName } è ora disponibile
 tracker-settings-update = Aggiorna
 tracker-settings-update-title = Versione firmware
 
@@ -541,7 +542,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Abilita questa opzione se i tuoi tracker perdono continuano l'orientamento.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Compensazione del drift predittiva
 settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Attenzione:</b> Utilizzare la compensazione del drift solo se è necessario il ripristino 
+    <b>Attenzione:</b> Utilizzare la compensazione del drift solo se è necessario il ripristino
     molto spesso (ogni ~5-10 minuti).
     
     Alcune IMU che sono soggetti a frequenti ripristini includono:
@@ -600,8 +601,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = "Compenetrazione
 settings-general-fk_settings-leg_tweak-toe_snap-description = "Dita dei piedi piantate" prova ad indovinare la rotazione dei tuoi piedi quando non stai usando dei tracker per i piedi.
 settings-general-fk_settings-leg_tweak-foot_plant-description = "Piedi piantati" ruota i piedi in modo tale che siano paralleli al terreno quando in contatto con esso.
 settings-general-fk_settings-leg_fk = Tracciamento delle gambe
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Abilita il ripristino di posizionamento dei piedi mettendosi in punta di piedi.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Ripristino del posizionamento dei piedi
 settings-general-fk_settings-enforce_joint_constraints = Limiti dello scheletro
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Rispetta i vincoli
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Impedisci ai legamenti di ruotare oltre il loro limite
@@ -714,9 +713,6 @@ settings-general-interface-connected_trackers_warning-label = Avviso di tracker 
 ## Behavior settings
 
 settings-interface-behavior = Comportamento
-settings-general-interface-dev_mode = Modalità sviluppatore
-settings-general-interface-dev_mode-description = Questa modalità è utile se hai bisogno di dati approfonditi o devi interagire in maniera più avanzata con i tracker connessi.
-settings-general-interface-dev_mode-label = Modalità sviluppatore
 settings-general-interface-use_tray = Riduci a icona nella barra delle applicazioni
 settings-general-interface-use_tray-description = Ti consente di chiudere la finestra senza chiudere il server SlimeVR in modo da poter continuare a usarlo senza che la GUI ti infastidisca.
 settings-general-interface-use_tray-label = Riduci a icona nella barra delle applicazioni
@@ -755,7 +751,6 @@ settings-serial-factory_reset-warning =
     Ciò significa che le impostazioni Wi-Fi e di calibrazione <b>andranno tutte perse!</b>
 settings-serial-factory_reset-warning-ok = Capisco cosa sto facendo
 settings-serial-factory_reset-warning-cancel = Annulla
-settings-serial-get_infos = Ottieni informazioni
 settings-serial-serial_select = Seleziona una porta seriale
 settings-serial-auto_dropdown_item = Automatico
 settings-serial-get_wifi_scan = Elenca WiFi Network
@@ -858,6 +853,9 @@ settings-osc-vmc-mirror_tracking = Tracciamento speculare
 settings-osc-vmc-mirror_tracking-description = Specchia il tracciamento orizzontalmente.
 settings-osc-vmc-mirror_tracking-label = Tracciamento speculare
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Avanzato
@@ -891,6 +889,12 @@ settings-utils-advanced-open_logs = Cartella dei Log
 settings-utils-advanced-open_logs-description = Apri la cartella dei log di SlimeVR in Esplora Risorse, contenente i log dell'app
 settings-utils-advanced-open_logs-label = Apri cartella
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Salta la configurazione
@@ -906,11 +910,6 @@ onboarding-setup_warning-cancel = Continua la configurazione
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Torna all'introduzione
-onboarding-wifi_creds = Inserisci credenziali Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    I tracker utilizzeranno queste credenziali per connettersi in modalità wireless
-    Si prega di utilizzare le stesse credenziali con cui si è attualmente connessi
 onboarding-wifi_creds-skip = Salta impostazioni Wi-Fi
 onboarding-wifi_creds-submit = Conferma!
 onboarding-wifi_creds-ssid =
@@ -929,7 +928,7 @@ onboarding-reset_tutorial-explanation = Mentre usi i tuoi tracker, potrebbero pe
 onboarding-reset_tutorial-skip = Salta passaggio
 # Cares about multiline
 onboarding-reset_tutorial-0 =
-    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino dell'orientamento. 
+    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino dell'orientamento.
     
     Ciò farà sì che i tracker siano rivolti nella stessa direzione del tuo HMD.
 # Cares about multiline
@@ -940,7 +939,7 @@ onboarding-reset_tutorial-1 =
     Questo ripristinerà  completamente la posizione e la rotazione di tutti i tuoi tracker. Dovrebbe risolvere la maggior parte dei problemi.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
-    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino del posizionamento. 
+    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino del posizionamento.
     
     Il ripristino del posizionamento aiuta a determinare come i tracker vengono effettivamente posizionati su di te, quindi se li hai spostati accidentalmente e hai cambiato il modo in cui sono orientati di una grande quantità, questo aiuterà.
     
@@ -950,13 +949,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Benvenuti a SlimeVR
 onboarding-home-start = Prepariamoci!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Torna all'assegnazione dei tracker
-onboarding-enter_vr-title = È ora di entrare in VR!
-onboarding-enter_vr-description = Indossa tutti i tuoi tracker e entra in VR!
-onboarding-enter_vr-ready = Sono prontə!
 
 ## Setup done
 
@@ -1009,7 +1001,6 @@ onboarding-connect_tracker-next = Ho collegato tutti i miei tracker
 
 onboarding-calibration_tutorial = Tutorial di calibrazione IMU
 onboarding-calibration_tutorial-subtitle = Ciò aiuterà a ridurre il drift del tracker!
-onboarding-calibration_tutorial-description = Ogni volta che accendi i tracker, devono riposare per un momento su una superficie piana per calibrare. Facciamo la stessa cosa cliccando sul pulsante "{ onboarding-calibration_tutorial-calibrate }", <b>non muoverli!</b>
 onboarding-calibration_tutorial-calibrate = Ho messo i miei tracker sul tavolo
 onboarding-calibration_tutorial-status-waiting = Ti aspettiamo
 onboarding-calibration_tutorial-status-calibrating = Calibrazione in corso
@@ -1186,7 +1177,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Torna al tutorial di ripristino
 onboarding-manual_proportions-title = Impostazione manuale delle proporzioni del corpo
 onboarding-manual_proportions-fine_tuning_button = Regola automaticamente le proporzioni
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Per piacer collega un visore VR per utilizzare la regolazione automatica
@@ -1285,30 +1275,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Si prega di ripetere le misurazioni e assicurarsi che siano corrette.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Indietro
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proporzioni in scala
-onboarding-scaled_proportions-description = Affinché i tracker di SlimeVR funzionino, dobbiamo conoscere la lunghezza dei tuoi arti. Questo utilizzerà delle proporzioni nella media e la scalerà in base alla tua altezza.
-onboarding-scaled_proportions-manual_height-title = Configura la tua altezza
-onboarding-scaled_proportions-manual_height-description-v2 = Questa altezza verrà utilizzata come punto di riferimento per calcolare le proporzioni del tuo corpo.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR non è attualmente connesso a SlimeVR, quindi le misurazioni non possono essere basate sul visore. <b>Procedi a tua discrezione o controlla la documentazione!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = La tua altezza totale è
-onboarding-scaled_proportions-manual_height-estimated_height = La altezza del tuo visore stimata è:
-onboarding-scaled_proportions-manual_height-next_step = Continua e salva
-onboarding-scaled_proportions-manual_height-warning =
-    Al momento stai utilizzando il metodo manuale per impostare le proporzioni in scala!
-    <b>Questa modalità è consigliata solo se non si utilizza un Visore con SlimeVR</b>
-    
-    Per poter utilizzare le proporzioni in scala automatica, si prega di:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Collegare un visore VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Assicurarsi che i controller siano collegati e assegnati correttamente alle mani
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Ripristina le proporzioni del corpo
-onboarding-scaled_proportions-reset_proportion-description = Per impostare le proporzioni del tuo corpo in base alla tua altezza, ora devi ripristinare tutte le tue proporzioni. In questo modo verranno cancellate tutte le proporzioni configurate e verrà fornita una configurazione di base.
-onboarding-scaled_proportions-done-title = Proporzioni del corpo configurate
-onboarding-scaled_proportions-done-description = Le proporzioni del tuo corpo dovrebbero ora essere configurate in base alla tua altezza.
 
 ## Stay Aligned setup
 
@@ -1383,74 +1351,11 @@ firmware_tool = Strumento firmware fai-da-te
 firmware_tool-description = Ti consente di configurare e flashare i tuoi tracker fai-da-te
 firmware_tool-not_available = Oops, lo strumento firmware non è disponibile al momento. Torna più tardi!
 firmware_tool-not_compatible = Lo strumento firmware non è compatibile con questa versione del server. Aggiorna il tuo server!
-firmware_tool-board_step = Seleziona la tua scheda
-firmware_tool-board_step-description = Seleziona una delle schede elencate di seguito.
-firmware_tool-board_pins_step = Controlla i pin
-firmware_tool-board_pins_step-description =
-    Per piacer verifica che i pin selezionati siano corretti.
-    Se hai seguito la documentazione di SlimeVR, i valori predefiniti dovrebbero essere corretti
-firmware_tool-board_pins_step-enable_led = Abilita LED
-firmware_tool-board_pins_step-led_pin =
-    .label = Pin LED
-    .placeholder = Inserisci l'indirizzo del Pin LED
-firmware_tool-board_pins_step-battery_type = Seleziona il tipo di batteria
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Batteria esterna
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Batteria interna
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = MCP3021 interno
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Pin del sensore della batteria
-    .placeholder = Inserisci l'indirizzo del sensore della batteria
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Resistenza della batteria (Ohm)
-    .placeholder = Inserisci il valore della resistenza della batteria
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Shield R1 della batteria (Ohm)
-    .placeholder = Inserisci il valore dello Shield R1 della batteria
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Shield R2 della batteria (Ohm)
-    .placeholder = Inserisci il valore dello Shield R2 della batteria
-firmware_tool-add_imus_step = Specifica i tuoi IMU
-firmware_tool-add_imus_step-description =
-    Per piacere aggiungi le IMU del tuo tracker
-    Se hai seguito la documentazione di SlimeVR, i valori predefiniti dovrebbero essere corretti
-firmware_tool-add_imus_step-imu_type-label = Tipo dell'IMU
-firmware_tool-add_imus_step-imu_type-placeholder = Seleziona il tipo dell'IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = Rotazione dell'IMU (gradi)
-    .placeholder = Angolo di rotazione dell'IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = Pin SLC
-    .placeholder = Indirizzo del Pin SLC
-firmware_tool-add_imus_step-sda_pin =
-    .label = Pin SDA
-    .placeholder = Indirezzo del Pin SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = Pin INT
-    .placeholder = Indirizzo del Pin INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Tracker opzionale
-firmware_tool-add_imus_step-show_less = Mostra meno
-firmware_tool-add_imus_step-show_more = Mostra di più
-firmware_tool-add_imus_step-add_more = Aggiungere altre IMU
-firmware_tool-select_firmware_step = Seleziona la versione del firmware
-firmware_tool-select_firmware_step-description = Per piacere scegli la versione del firmware che desideri utilizzare
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Mostra firmware di terze parti
 firmware_tool-flash_method_step = Metodo di flashing
 firmware_tool-flash_method_step-description = Seleziona il metodo di flashing che desideri utilizzare
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Usa il metodo via rete. Il tuo tracker utilizzerà il Wi-Fi per aggiornare il suo firmware. Funziona solo su tracker già configurati.
-firmware_tool-flash_method_step-serial =
-    .label = Seriale
-    .description = Usa un cavo USB per aggiornare il tracker.
 firmware_tool-flashbtn_step = Premi il pulsante di avvio
 firmware_tool-flashbtn_step-description = Prima di passare al passaggio successivo, ci sono alcune cose che devi fare
 firmware_tool-flashbtn_step-board_SLIMEVR = Spegni il tracker, rimuovi la custodia (se presente), collega un cavo USB a questo computer, quindi esegui uno dei seguenti passaggi in base alla revisione della tua scheda SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Accendi il tracker mentre cortocircuiti il pad rettangolare FLASH, il secondo pad contando dal bordo superiore della scheda, e lo shield metallico del microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Accendi il tracker mentre cortocircuiti il pad circolare FLASH, il pad vicino al bordo superiore della scheda, e lo shield metallico del microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Accendi il tracker mentre premi il pulsante FLASH sul lato superiore della scheda
 firmware_tool-flashbtn_step-board_OTHER =
     Prima di eseguire il flashing, sarà probabilmente necessario mettere il tracker in modalità bootloader.
     La maggior parte delle volte significa premere il pulsante di avvio sulla scheda prima che inizi il processo di flashing.
@@ -1473,9 +1378,6 @@ firmware_tool-flashing_step-exit = Esci
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = Creazione della cartella di compilazione
-firmware_tool-build-DOWNLOADING_FIRMWARE = Scaricamento del firmware
-firmware_tool-build-EXTRACTING_FIRMWARE = Estrazione del firmware
-firmware_tool-build-SETTING_UP_DEFINES = Configurazione delle definizioni del firmware
 firmware_tool-build-BUILDING = Compilazione del firmware
 firmware_tool-build-SAVING = Salvataggio del codice compilato
 firmware_tool-build-DONE = Compilazione completata
@@ -1589,3 +1491,6 @@ error_collection_modal-description_v2 =
     Puoi modificare questa impostazione in un secondo momento nella sezione Comportamento delle impostazioni.
 error_collection_modal-confirm = Acconsento
 error_collection_modal-cancel = Non acconsento
+
+## Tracking checklist section
+

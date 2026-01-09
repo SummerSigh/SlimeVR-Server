@@ -60,10 +60,12 @@ dependencies {
 
 	implementation("commons-cli:commons-cli:1.8.0")
 	implementation("org.apache.commons:commons-lang3:3.15.0")
-	implementation("com.google.protobuf:protobuf-java:3.21.12")
+	implementation("com.google.protobuf:protobuf-java:4.31.1")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
-	implementation("com.fazecast:jSerialComm:2.11.2")
+	implementation("com.fazecast:jSerialComm:2.11.3") {
+		exclude(group = "com.fazecast", module = "android")
+	}
 	implementation("org.hid4java:hid4java:0.8.0")
 }
 

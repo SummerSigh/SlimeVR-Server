@@ -31,6 +31,9 @@ tips-tap_setup = Du kan forsiktig trykke på din tracker 2 ganger sammenhengende
 tips-turn_on_tracker = Bruker du offisielle SlimeVR trackere? Husk å <b><em>skru dem på</em></b> etter å ha koblet dem til PCen din!
 tips-failed_webgl = Feil ved initialisering av WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ikke tildelt
@@ -147,7 +150,7 @@ widget-overlay-is_mirrored_label = Vis overlegg som speil
 ## Widget: Drift compensation
 
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -394,9 +397,6 @@ settings-general-interface-serial_detection-label = Seriell enhets gjenkjenning
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Utvikler modus
-settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
-settings-general-interface-dev_mode-label = Utvikler modus
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
     
@@ -422,7 +422,6 @@ settings-serial-factory_reset-warning =
     Som betyr at Wi-Fi og kalibrerings innstillingene dine </b>vil bli tapt!</b>
 settings-serial-factory_reset-warning-ok = Jeg vet hva jeg driver med
 settings-serial-factory_reset-warning-cancel = Avslutt
-settings-serial-get_infos = Få info
 settings-serial-serial_select = Velg en serieport
 settings-serial-auto_dropdown_item = Auto
 
@@ -477,7 +476,16 @@ settings-osc-vrchat-network-trackers-elbows = Albuer
 ## VMC OSC settings
 
 
+## Common OSC settings
+
+
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu
@@ -489,11 +497,6 @@ onboarding-wip = Arbeid pågår
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Gå tilbake til introduksjonen
-onboarding-wifi_creds = Tast inn Wi-Fi legitimasjon
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Trackerne bruker denne legitimasjonen for å koble til trådløst.
-    Vennligst bruk legitimasjonen til nettet du er koblet til nå.
 onboarding-wifi_creds-skip = Hopp over Wi-Fi innstillinger
 onboarding-wifi_creds-submit = Send inn!
 onboarding-wifi_creds-ssid =
@@ -513,13 +516,6 @@ onboarding-reset_tutorial-skip = Hopp over trinn
 
 onboarding-home = Velkommen til SlimeVR
 onboarding-home-start = La oss sette i gang!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Gå tilbake til Tracker tilordning
-onboarding-enter_vr-title = På tide å tre inn i VR!
-onboarding-enter_vr-description = Putt på alle trackerne dine og tre inn i VR!
-onboarding-enter_vr-ready = Jeg er klar!
 
 ## Setup done
 
@@ -605,7 +601,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere 
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Gå tilbake til Nullstillings opplæring
 onboarding-manual_proportions-title = Manuelle kropps-proporsjoner
 
 ## Tracker automatic proportions setup
@@ -640,10 +635,7 @@ onboarding-automatic_proportions-verify_results-confirm = De er riktige
 onboarding-automatic_proportions-done-title = Kropp målt og lagret.
 onboarding-automatic_proportions-done-description = Din kropps-proposisjons kalibrering er fullført!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup
@@ -685,4 +677,7 @@ tray_or_exit_modal-cancel = Avbryt
 
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

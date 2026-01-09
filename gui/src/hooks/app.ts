@@ -1,22 +1,20 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {
   DataFeedMessage,
   DataFeedUpdateT,
   ResetResponseT,
-  ResetStatus,
-  ResetType,
   RpcMessage,
   StartDataFeedT,
 } from 'solarxr-protocol';
-import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
+import { handleResetSounds } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
-import { error } from '@/utils/logging';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
-import { updateSentryContext } from '@/utils/sentry';
+import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
+import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
@@ -25,6 +23,7 @@ export interface AppContext {
 export function useProvideAppContext(): AppContext {
   const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
     useWebsocketAPI();
+  const { changeLocales } = useContext(LangContext);
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
   const bonesDataFeedConfig = useBonesDataFeedConfig();
@@ -55,28 +54,35 @@ export function useProvideAppContext(): AppContext {
     updateSentryContext(devices);
   }, [devices]);
 
-  useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
+  useRPCPacket(RpcMessage.ResetResponse, (resetResponse: ResetResponseT) => {
     if (!config?.feedbackSound) return;
-    try {
-      switch (status) {
-        case ResetStatus.STARTED: {
-          if (resetType !== ResetType.Yaw)
-            playSoundOnResetStarted(config?.feedbackSoundVolume);
-          break;
-        }
-        case ResetStatus.FINISHED: {
-          playSoundOnResetEnded(resetType, config?.feedbackSoundVolume);
-          break;
-        }
-      }
-    } catch (e) {
-      error(e);
-    }
+    handleResetSounds(config?.feedbackSoundVolume ?? 1, resetResponse);
   });
 
   useEffect(() => {
-    fetchCurrentFirmwareRelease().then((res) => setCurrentFirmwareRelease(res));
+    if (!config) return;
+
+    const interval = setInterval(() => {
+      fetchCurrentFirmwareRelease(config.uuid).then(setCurrentFirmwareRelease);
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [config?.uuid]);
+
+  useLayoutEffect(() => {
+    changeLocales([config?.lang || DEFAULT_LOCALE]);
   }, []);
+
+  useLayoutEffect(() => {
+    if (!config) return;
+    if (config.errorTracking !== undefined) {
+      console.log('change');
+      // Alows for sentry to refresh if user change the setting once the gui
+      // is initialized
+      getSentryOrCompute(config.errorTracking ?? false, config.uuid);
+    }
+  }, [config]);
 
   return {
     currentFirmwareRelease,

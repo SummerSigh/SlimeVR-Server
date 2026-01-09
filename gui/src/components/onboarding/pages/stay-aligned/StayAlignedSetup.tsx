@@ -136,7 +136,7 @@ export function StayAlignedSetup() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-stay_aligned-title')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-stay_aligned-description')}
           </Typography>
         </div>
@@ -189,7 +189,7 @@ export function StayAlignedSetup() {
                 component: DoneStep,
               },
             ]}
-          ></VerticalStepper>
+          />
         </div>
       </div>
       <div className="bg-background-70 rounded-md xs:max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full mobile:h-[30%]">
@@ -222,7 +222,7 @@ export function StayAlignedSetup() {
               },
             });
           }}
-        ></SkeletonVisualizerWidget>
+        />
       </div>
     </div>
   );

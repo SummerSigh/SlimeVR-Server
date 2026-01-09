@@ -56,6 +56,11 @@ enum class BoardType(val id: UInt) {
 	ESP32C6DEVKITC1(19u),
 	GLOVE_IMU_SLIMEVR_DEV(20u),
 	GESTURES(21u),
+	SLIMEVR_V1_2(22u),
+	ESP32S3_SUPERMINI(23u),
+	GENERIC_NRF(24u),
+	SLIMEVR_BUTTERFLY_DEV(25u),
+	SLIMEVR_BUTTERFLY(26u),
 	DEV_RESERVED(250u),
 	;
 
@@ -84,6 +89,11 @@ enum class BoardType(val id: UInt) {
 		HARITORA -> "Haritora"
 		ESP32C6DEVKITC1 -> "Espressif ESP32-C6 DevKitC-1"
 		GLOVE_IMU_SLIMEVR_DEV -> "SlimeVR Dev IMU Glove"
+		SLIMEVR_V1_2 -> "SlimeVR v1.2"
+		ESP32S3_SUPERMINI -> "ESP32-S3 SuperMini"
+		GENERIC_NRF -> "Generic nRF"
+		SLIMEVR_BUTTERFLY_DEV -> "SlimeVR Dev Butterfly"
+		SLIMEVR_BUTTERFLY -> "SlimeVR Butterfly"
 		DEV_RESERVED -> "Prototype"
 	}
 
@@ -105,6 +115,8 @@ enum class MCUType(val id: UInt) {
 	ESP32_C3(6u),
 	MOCOPI(7u),
 	HARITORA(8u),
+	NRF52(9u),
+	NRF54L(10u),
 	DEV_RESERVED(250u),
 	;
 

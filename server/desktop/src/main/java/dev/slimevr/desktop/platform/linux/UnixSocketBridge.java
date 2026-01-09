@@ -8,6 +8,7 @@ import dev.slimevr.desktop.platform.SteamVRBridge;
 import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.List;
 public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	public final String socketPath;
 	public final UnixDomainSocketAddress socketAddress;
+	private final String bridgeSettingsKey;
 	private final ByteBuffer dst = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 	private final ByteBuffer src = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 
@@ -41,12 +43,22 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		List<Tracker> shareableTrackers
 	) {
 		super(server, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
+		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.socketPath = socketPath;
 		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
 
 		File socketFile = new File(socketPath);
 		if (socketFile.exists()) {
-			throw new RuntimeException(socketPath + " socket already exists.");
+			if (SocketUtils.isSocketInUse(socketPath)) {
+				throw new RuntimeException(
+					socketPath + " socket is already in use by another process."
+				);
+			} else {
+				LogManager.warning("[" + bridgeName + "] Cleaning up stale socket: " + socketPath);
+				if (!socketFile.delete()) {
+					throw new RuntimeException("Failed to delete stale socket: " + socketPath);
+				}
+			}
 		}
 		socketFile.deleteOnExit();
 	}
@@ -240,6 +252,12 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	@Override
 	public boolean isConnected() {
 		return channel != null && channel.isConnected();
+	}
+
+	@NotNull
+	@Override
+	public String getBridgeConfigKey() {
+		return bridgeSettingsKey;
 	}
 }
 

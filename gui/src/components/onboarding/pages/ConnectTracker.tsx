@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
   StartWifiProvisioningRequestT,
-  StatusData,
   StopWifiProvisioningRequestT,
+  TrackingChecklistPublicNetworksT,
+  TrackingChecklistStepId,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
@@ -19,14 +20,13 @@ import { ProgressBar } from '@/components/commons/ProgressBar';
 import { TipBox, WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
-import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -74,9 +74,34 @@ const statusProgressMap = {
   [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
 };
 
+export function InvalidNetworkProfileWarning({
+  extraData,
+}: {
+  extraData: TrackingChecklistPublicNetworksT;
+}) {
+  return (
+    <div className="pt-4">
+      <Localized
+        id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
+        elems={{
+          PublicFixLink: (
+            <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
+          ),
+        }}
+        vars={{
+          count: extraData.adapters.length,
+          adapters: extraData.adapters.join(', '),
+        }}
+      >
+        <WarningBox whitespace={false}>WARNING</WarningBox>
+      </Localized>
+    </div>
+  );
+}
+
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { statuses } = useStatusContext();
+  const { visibleSteps } = useTrackingChecklist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
@@ -87,8 +112,6 @@ export function ConnectTrackersPage() {
   const [ignoreError, setIgnoreError] = useState(false);
 
   applyProgress(0.4);
-
-  const bnoExists = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
@@ -165,11 +188,13 @@ export function ConnectTrackersPage() {
     [connectedIMUTrackers.length]
   );
 
-  const filteredStatuses = useMemo(() => {
-    return Object.entries(statuses).filter(
-      ([, value]) => value.dataType == StatusData.StatusPublicNetwork
+  const invalidNetworkProfile = useMemo(() => {
+    return visibleSteps.find(
+      (step) =>
+        step.id === TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC &&
+        !step.valid
     );
-  }, [statuses]);
+  }, [visibleSteps]);
 
   return (
     <>
@@ -189,21 +214,21 @@ export function ConnectTrackersPage() {
       >
         <div className="flex flex-col items-center gap-2 ">
           <Localized id={(errorLabelMap as any)[provisioningStatus]}>
-            <Typography variant="main-title"></Typography>
+            <Typography variant="main-title" />
           </Localized>
           <Localized id={`${(errorLabelMap as any)[provisioningStatus]}-desc`}>
             <Typography
               variant="standard"
               whitespace="whitespace-pre-wrap"
               block
-            ></Typography>
+            />
           </Localized>
           <video
             src={CONNECT_TRACKER}
             loop
             autoPlay
             className="w-full aspect-video rounded-md mt-2"
-          ></video>
+          />
           <div className="flex gap-3 pt-5 justify-end w-full">
             <Button
               variant="tertiary"
@@ -221,10 +246,10 @@ export function ConnectTrackersPage() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
@@ -239,27 +264,17 @@ export function ConnectTrackersPage() {
           </div>
           <Localized
             id={currentTip}
-            elems={{ em: <em className="italic"></em>, b: <b></b> }}
+            elems={{ em: <em className="italic" />, b: <b /> }}
           >
             <TipBox>Conditional tip</TipBox>
           </Localized>
-          {filteredStatuses.map(([, status]) => (
-            <div className="pt-4">
-              <Localized
-                key={status.id}
-                id={`status_system-${StatusData[status.dataType]}`}
-                elems={{
-                  PublicFixLink: (
-                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
-                  ),
-                }}
-              >
-                <WarningBox whitespace={false}>
-                  {`Warning, you should fix ${StatusData[status.dataType]}`}
-                </WarningBox>
-              </Localized>
-            </div>
-          ))}
+          {invalidNetworkProfile && (
+            <InvalidNetworkProfileWarning
+              extraData={
+                invalidNetworkProfile.extraData as TrackingChecklistPublicNetworksT
+              }
+            />
+          )}
           <div
             className={classNames(
               'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',
@@ -273,7 +288,7 @@ export function ConnectTrackersPage() {
                 'right-5 bottom-8'
               )}
             >
-              <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
+              <LoaderIcon slimeState={slimeStatus} />
             </div>
 
             <div className="flex flex-col grow self-center">
@@ -281,7 +296,7 @@ export function ConnectTrackersPage() {
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
               <div className="flex fill-background-10 gap-1">
-                <Typography color="secondary">
+                <Typography>
                   {l10n.getString(statusLabelMap[provisioningStatus])}
                 </Typography>
               </div>
@@ -290,7 +305,7 @@ export function ConnectTrackersPage() {
                 height={14}
                 animated={true}
                 colorClass={progressBarClass}
-              ></ProgressBar>
+              />
             </div>
           </div>
           <div className="flex flex-row mt-4 gap-3">
@@ -305,21 +320,15 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={
-                state.alonePage
-                  ? '/'
-                  : bnoExists
-                    ? '/onboarding/calibration-tutorial'
-                    : '/onboarding/assign-tutorial'
-              }
+              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}
             </Button>
           </div>
         </div>
-        <div style={{ gridArea: 't' }} className="flex items-center px-5">
-          <Typography color="secondary" bold>
+        <div style={{ gridArea: 't' }} className="flex items-center px-5 pt-5">
+          <Typography bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
               amount: connectedIMUTrackers.length,
             })}
@@ -338,14 +347,14 @@ export function ConnectTrackersPage() {
                       'rounded-xl h-16 animate-pulse',
                       state.alonePage ? 'bg-background-80' : 'bg-background-70'
                     )}
-                  ></div>
+                  />
                 )}
                 {tracker && (
                   <TrackerCard
                     tracker={tracker.tracker}
                     device={tracker.device}
                     smol
-                  ></TrackerCard>
+                  />
                 )}
               </div>
             ))}

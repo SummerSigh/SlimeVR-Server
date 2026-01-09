@@ -18,7 +18,7 @@ import { invoke } from '@tauri-apps/api/core';
 
 function guiDefaults() {
   // Destructure the properties to exclude "lang"
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const { lang, ...guiDefaults } = defaultGUIConfig;
 
   guiDefaults.devSettings = defaultDevConfig;
@@ -54,7 +54,7 @@ export function AdvancedSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<BugIcon></BugIcon>} id="advanced">
+        <SettingsPagePaneLayout icon={<BugIcon />} id="advanced">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-utils-advanced')}
@@ -63,11 +63,11 @@ export function AdvancedSettings() {
             <div className="grid gap-4">
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-reset-gui')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-reset-gui-description'
                       )}
@@ -89,17 +89,17 @@ export function AdvancedSettings() {
                     onClose={() => setShowWarningGUI(false)}
                     isOpen={showWarningGUI}
                     variant="gui"
-                  ></SettingsResetModal>
+                  />
                 </div>
               </div>
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-reset-server')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-reset-server-description'
                       )}
@@ -126,17 +126,17 @@ export function AdvancedSettings() {
                     onClose={() => setShowWarningServer(false)}
                     isOpen={showWarningServer}
                     variant="server"
-                  ></SettingsResetModal>
+                  />
                 </div>
               </div>
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-reset-all')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-reset-all-description'
                       )}
@@ -162,17 +162,17 @@ export function AdvancedSettings() {
                     onClose={() => setShowWarningAll(false)}
                     isOpen={showWarningAll}
                     variant="all"
-                  ></SettingsResetModal>
+                  />
                 </div>
               </div>
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-open_data-v1')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-open_data-description-v1'
                       )}
@@ -188,11 +188,11 @@ export function AdvancedSettings() {
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-open_logs')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-open_logs-description'
                       )}

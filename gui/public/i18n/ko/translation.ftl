@@ -31,6 +31,9 @@ tips-tap_setup = 목록에서 트래커를 선택하는 대신 트래커를 천�
 tips-turn_on_tracker = 공식 SlimeVR 트래커를 사용 중이신가요? 트래커를 <b><em>PC에 연결</em></b>하고 <b><em>전원을 키셔야</em></b> 해요.
 tips-failed_webgl = WebGL 초기화에 실패했습니다.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 할당되지 않음
@@ -159,7 +162,7 @@ widget-overlay-is_mirrored_label = 오버레이 반전
 
 widget-drift_compensation-clear = 틀어짐 보정 초기화
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 착용 방향 정렬 초기화
 
@@ -275,9 +278,7 @@ tracker-settings-name_section-label = 트래커 이름
 tracker-settings-forget = 트래커 삭제
 tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
 tracker-settings-forget-label = 트래커 삭제
-tracker-settings-update-unavailable = 업데이트할 수 없음 (DIY)
 tracker-settings-update-up_to_date = 최신 버전
-tracker-settings-update-available = { $versionName } 사용 가능
 tracker-settings-update = 지금 업데이트
 tracker-settings-update-title = 펌웨어 버전
 
@@ -383,7 +384,7 @@ settings-general-steamvr-trackers-tracker_toggling = 자동 트래커 할당
 settings-general-steamvr-trackers-tracker_toggling-description = 지정한 트래커 할당 상태에 따라 SteamVR 트래커를 자동으로 켜고 끄기
 settings-general-steamvr-trackers-tracker_toggling-label = 자동 트래커 할당
 settings-general-steamvr-trackers-hands-warning =
-    <b>경고:</b> 핸드 트래커를 사용하면 VR 컨트롤러가 작동하지 않아요. 
+    <b>경고:</b> 핸드 트래커를 사용하면 VR 컨트롤러가 작동하지 않아요.
     그래도 사용할까요?
 settings-general-steamvr-trackers-hands-warning-cancel = 취소
 settings-general-steamvr-trackers-hands-warning-done = 확인
@@ -414,7 +415,7 @@ settings-general-tracker_mechanics-drift_compensation-enabled-label = 틀어짐 
 settings-general-tracker_mechanics-drift_compensation-prediction = 틀어짐 보정 예측
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    점점 심하게 틀어지는 트래커의 틀어짐 방향을 예측해요. 
+    점점 심하게 틀어지는 트래커의 틀어짐 방향을 예측해요.
     틀어짐 보정을 사용해도 트래커가 Yaw 축에서 계속 틀어지면 이 옵션을 켜세요.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = 예측해서 틀어짐 보정하기
 settings-general-tracker_mechanics-drift_compensation_warning =
@@ -428,7 +429,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = 보정 강�
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 보정에 사용할 최근 정렬 횟수
 settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 정렬 보정값 저장
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    트래커의 착용 방향 정렬 보정값을 저장합니다. 트래커들의 위치가 고정된 
+    트래커의 착용 방향 정렬 보정값을 저장합니다. 트래커들의 위치가 고정된
     모션 캡처 슈트 같은 것을 사용할 때 유용해요. <b>일반 사용자들에게는 권장되지 않아요!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 착용 방향 정렬 저장
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 자력계를 지원하는 모든 IMU 트래커에서 자력계 활성화
@@ -457,8 +458,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 플로어 클립
 settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 트래커가 없을 때, 발 트래커가 있는 것처럼 예측해서 움직여주는 기능이에요.
 settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 까치발을 들어 발 트래커의 착용 방향 정렬을 활성화하기
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 발 트래커 착용 방향 정렬
 settings-general-fk_settings-enforce_joint_constraints = 골격 한계
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 상수 강제 적용
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 관절의 회전 각도를 제한합니다
@@ -526,6 +525,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 몸�
 ## Appearance settings
 
 settings-interface-appearance = 모양
+settings-general-interface-dev_mode = 개발자 모드
+settings-general-interface-dev_mode-description = 이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.
+settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-theme = 컬러 테마
 settings-general-interface-show-navbar-onboarding = 내비게이션 바에 "{ navbar-onboarding }" 표시
 settings-general-interface-show-navbar-onboarding-description = 이 설정은 내비게이션 바에 "{ navbar-onboarding }" 버튼을 표시할 지 결정해요.
@@ -561,9 +563,6 @@ settings-general-interface-connected_trackers_warning-label = 종료 시 작동 
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = 개발자 모드
-settings-general-interface-dev_mode-description = 이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.
-settings-general-interface-dev_mode-label = 개발자 모드
 settings-general-interface-use_tray = 작업 표시줄로 최소화
 settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
 settings-general-interface-use_tray-label = 작업 표시줄로 최소화
@@ -595,7 +594,6 @@ settings-serial-factory_reset-warning =
     계속하면 Wi-Fi와 캘리브레이션 정보도 <b>모두 삭제됩니다!</b>
 settings-serial-factory_reset-warning-ok = 네! 알고 있어요.
 settings-serial-factory_reset-warning-cancel = 취소
-settings-serial-get_infos = 정보 가져오기
 settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
@@ -696,6 +694,9 @@ settings-osc-vmc-mirror_tracking = 움직임 좌우 반전
 settings-osc-vmc-mirror_tracking-description = 움직임을 수평 방향으로 반전시킵니다.
 settings-osc-vmc-mirror_tracking-label = 움직임 좌우 반전
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = 고급
@@ -721,6 +722,12 @@ settings-utils-advanced-open_data-label = 폴더 열기
 settings-utils-advanced-open_logs = 로그 폴더
 settings-utils-advanced-open_logs-label = 폴더 열기
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = 설정 건너뛰기
@@ -736,11 +743,6 @@ onboarding-setup_warning-cancel = 설정 계속하기
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 처음으로 돌아가기
-onboarding-wifi_creds = Wi-Fi 자격 증명을 입력하세요
-# This cares about multilines
-onboarding-wifi_creds-description =
-    트래커는 이 자격 증명을 사용하여 무선으로 연결해요
-    지금 연결되어 있는 자격 증명을 사용해주세요
 onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
 onboarding-wifi_creds-ssid =
@@ -781,13 +783,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = SlimeVR에 어서오세요!
 onboarding-home-start = 설정하러 가보죠!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = 트래커 위치 지정으로 돌아가기
-onboarding-enter_vr-title = VR에 들어갈 시간이에요!
-onboarding-enter_vr-description = 모든 트래커를 착용하고 VR에 입장하세요!
-onboarding-enter_vr-ready = 준비됐어요!
-
 ## Setup done
 
 onboarding-done-title = 모든 설정을 마쳤어요!
@@ -827,7 +822,6 @@ onboarding-connect_tracker-next = 트래커를 모두 연결했어요
 
 onboarding-calibration_tutorial = IMU 보정 튜토리얼
 onboarding-calibration_tutorial-subtitle = 트래커 틀어짐을 줄이는 데 도움이 될 거예요!
-onboarding-calibration_tutorial-description = 매번 트래커의 전원을 켤 때마다 평평한 바닥에 트래커를 두고 잠시 기다려서 트래커를 보정해야 해요. 이번엔 "{ onboarding-calibration_tutorial-calibrate }"를 눌러서 직접 보정해 보죠. <b>(트래커를 움직이지 마세요!)</b>
 onboarding-calibration_tutorial-calibrate = 트래커들을 모두 올려뒀어요
 onboarding-calibration_tutorial-status-waiting = 대기 중
 onboarding-calibration_tutorial-status-calibrating = 보정 중
@@ -985,25 +979,17 @@ onboarding-automatic_mounting-mounting_reset-title = 착용 방향 정렬
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 몸을 굽혀 낮추세요.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. "착용 방향 재설정" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요.
 onboarding-automatic_mounting-preparation-title = 준비
-onboarding-automatic_mounting-preparation-step-0 = 1. 팔을 몸에 붙이고 똑바로 서 주세요
-onboarding-automatic_mounting-preparation-step-1 = 2. "전체 정렬" 버튼을 누르고 트래커가 정렬될 때까지 3초간 기다려주세요.
 onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주세요
 onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향을 보정하기 위해 방금 할당한 트래커들을 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 각각의 트래커가 어떤 위치에 있는지 확인할 수 있어요.
 onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 정렬 튜토리얼로 돌아가기
 onboarding-manual_proportions-title = 수동 신체 비율 설정
-onboarding-manual_proportions-precision = 자세히 조절하기
-onboarding-manual_proportions-auto = 자동 신체 비율 설정
-onboarding-manual_proportions-ratio = 비율 그룹으로 조절하기
 onboarding-manual_proportions-fine_tuning_button = 신체 비율을 자동으로 조정
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 신체 비율 자동 조정 기능을 이용하려면 VR 헤드셋을 연결해 주세요
 onboarding-manual_proportions-export = 신체 비율 내보내기
 onboarding-manual_proportions-import = 신체 비율 가져오기
-onboarding-manual_proportions-import-success = 가져오기 완료
-onboarding-manual_proportions-import-failed = 가져오기 실패
 onboarding-manual_proportions-file_type = 신체 비율 파일
 
 ## Tracker automatic proportions setup
@@ -1060,7 +1046,7 @@ onboarding-automatic_proportions-recording-description-p0 = 기록하는 중...
 onboarding-automatic_proportions-recording-description-p1 = 아래에 표시된 동작을 따라 하세요
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
-    자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요. 
+    자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요.
     등을 앞으로 구부리고 스쿼트를 하듯이 몸을 낮추세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
     상체를 왼쪽(시계 반대 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
     상체를 오른쪽(시계 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
@@ -1090,23 +1076,11 @@ onboarding-automatic_proportions-smol_warning =
     <b>측정을 다시 수행하고 측정값들이 올바른지 확인해 주세요.</b>
 onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 키를 사용하여 추산한 신체 비율
-onboarding-scaled_proportions-description = SlimeVR 트래커들이 작동하기 위해서는 사용자의 뼈 길이를 알아야 합니다. 이 옵션은 뼈 길이를 측정된 키에 비례하는 평균치로 설정합니다.
-onboarding-scaled_proportions-manual_height-title = 키 설정하기
-onboarding-scaled_proportions-manual_height-description-v2 = 설정된 키는 신체 비율의 기준치로 사용됩니다.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR이 SlimeVR에 연결되어 있지 않으므로 헤드셋을 이용해 값을 측정할 수 있어요. <b>위험을 감수하고 계속 진행하거나, 사용 설명서 및 도움말을 참조하세요!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 사용자의 키:
-onboarding-scaled_proportions-manual_height-estimated_height = 사용자의 추산된 헤드셋 높이:
-onboarding-scaled_proportions-manual_height-next_step = 계속하고 저장하기
 
-## Tracker scaled proportions reset
+## Stay Aligned setup
 
-onboarding-scaled_proportions-reset_proportion-title = 신체 비율 초기화
-onboarding-scaled_proportions-reset_proportion-description = 키에 따라 신체 비율을 설정하려면, 현재 설정된 신체 비율을 모두 초기화해야 합니다. 이 작업은 기존에 설정된 신체 비율을 초기화하고 신체 비율을 기본 설정으로 되돌립니다.
-onboarding-scaled_proportions-done-title = 신체 비율 설정됨
-onboarding-scaled_proportions-done-description = 이제 사용자의 키에 비례한 신체 비율이 사용됩니다.
 
 ## Home
 
@@ -1144,74 +1118,11 @@ firmware_tool = DIY 펌웨어 도구
 firmware_tool-description = DIY 트래커를 설정하고 펌웨어를 쓸 수 있습니다
 firmware_tool-not_available = 앗, 지금은 펌웨어 툴을 사용할 수 없어요. 나중에 다시 오세요!
 firmware_tool-not_compatible = 이 서버 버전은 펌웨어 도구를 지원하지 않습니다. 서버를 업데이트해 주세요!
-firmware_tool-board_step = 보드 선택
-firmware_tool-board_step-description = 아래의 보드 중 하나를 선택해 주세요.
-firmware_tool-board_pins_step = 핀 확인
-firmware_tool-board_pins_step-description =
-    설정된 핀이 정확한지 다시 확인해 주세요.
-    SlimeVR 사용 설명서를 따랐다면 기본값으로도 문제 없을 거에요
-firmware_tool-board_pins_step-enable_led = LED 켜기
-firmware_tool-board_pins_step-led_pin =
-    .label = LED 핀
-    .placeholder = LED가 연결된 핀 번호를 입력해 주세요
-firmware_tool-board_pins_step-battery_type = 배터리 유형 선택
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = 외부 배터리
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = 내부 배터리
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = 내장 MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = 배터리 센서 핀
-    .placeholder = 배터리 센서의 핀 번호를 입력해 주세요
-firmware_tool-board_pins_step-battery_resistor =
-    .label = 배터리 저항 (옴)
-    .placeholder = 배터리 저항의 값을 입력해 주세요
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = 배터리 쉴드 R1(옴)
-    .placeholder = 배터리 쉴드 R1 저항값을 입력해 주세요
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = 배터리 쉴드 R2(옴)
-    .placeholder = 배터리 쉴드 R2 저항값을 입력해 주세요
-firmware_tool-add_imus_step = IMU 설정
-firmware_tool-add_imus_step-description =
-    트래커가 사용하는 IMU들을 추가해 주세요
-    SlimeVR 사용 설명서를 따랐다면 기본값으로도 문제 없을 거에요
-firmware_tool-add_imus_step-imu_type-label = IMU 유형
-firmware_tool-add_imus_step-imu_type-placeholder = IMU 유형을 선택해 주세요
-firmware_tool-add_imus_step-imu_rotation =
-    .label = IMU 회전각 (도)
-    .placeholder = IMU의 회전각
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL 핀
-    .placeholder = SCL 핀의 번호
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA 핀
-    .placeholder = SDA 핀의 번호
-firmware_tool-add_imus_step-int_pin =
-    .label = INT 핀
-    .placeholder = INT 핀의 번호
-firmware_tool-add_imus_step-optional_tracker =
-    .label = 추가 트래커
-firmware_tool-add_imus_step-show_less = 간단하게
-firmware_tool-add_imus_step-show_more = 자세하게
-firmware_tool-add_imus_step-add_more = 더 많은 IMU 추가
-firmware_tool-select_firmware_step = 펌웨어 버전 선택
-firmware_tool-select_firmware_step-description = 사용하고자 하는 펌웨어 버전을 선택해 주세요
-firmware_tool-select_firmware_step-show-third-party =
-    .label = 제 3자 펌웨어 표시하기
 firmware_tool-flash_method_step = 펌웨어 플래시 방식
 firmware_tool-flash_method_step-description = 펌웨어를 트래커에 플래시할 방법을 선택해 주세요
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Wi-Fi를 이용하여 무선으로 트래커의 펌웨어를 업데이트합니다. 이미 설정을 완료한 트래커들에만 사용할 수 있어요.
-firmware_tool-flash_method_step-serial =
-    .label = Serial
-    .description = USB 케이블을 이용하여 트래커를 업데이트합니다.
 firmware_tool-flashbtn_step = BOOT 버튼 누르기
 firmware_tool-flashbtn_step-description = 다음 단계로 진행하기 전 몇 가지 작업을 해야 해요
 firmware_tool-flashbtn_step-board_SLIMEVR = 트래커를 끄고, 케이스를 제거하고 (만약 있다면), 이 컴퓨터에 USB 케이블을 연결한 후 SlimeVR 보드 버전에 따라 해당하는 작업을 수행해 주세요:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 보드 상단 가장자리에 위치한 두 번째 직사각형 FLASH 패드와 MCU의 금속 덮개를 단락시키며 트래커 전원을 켜기
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 보드 상단에 위치한 원형 FLASH 패드와 MCU의 금속 덮개를 단락시키며 트래커 전원을 켜기
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 보드 상단의 FLASH 버튼을 누른 채로 트래커 전원을 켜기
 firmware_tool-flashbtn_step-board_OTHER =
     펌웨어를 쓰기 전에 트래커를 부트로더 모드에 진입시켜야 해요.
     대부분의 경우 이는 펌웨어 쓰기 작업이 시작되기 전 보드에 있는 BOOT 버튼을 누르면 가능합니다.
@@ -1227,16 +1138,12 @@ firmware_tool-build_step = 빌드 중
 firmware_tool-build_step-description = 펌웨어를 빌드하는 중입니다. 잠시만 기다려 주세요
 firmware_tool-flashing_step = 펌웨어 쓰는 중
 firmware_tool-flashing_step-description = 트래커에 펌웨어를 쓰는 중입니다. 화면의 지시를 따라 주세요
-firmware_tool-flashing_step-warning = 별도의 지시가 없는 경우, 트래커를 선에서 분리하거나 업로드 중 전원을 끄지 말아 주세요. 트래커를 사용하지 못 하게 될 수도 있습니다
 firmware_tool-flashing_step-flash_more = 더 많은 트래커에 펌웨어 쓰기
 firmware_tool-flashing_step-exit = 나가기
 
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = 빌드 폴더 만드는 중
-firmware_tool-build-DOWNLOADING_FIRMWARE = 펌웨어 다운로드 중
-firmware_tool-build-EXTRACTING_FIRMWARE = 펌웨어 추출 중
-firmware_tool-build-SETTING_UP_DEFINES = 매크로 상수 정의하는 중
 firmware_tool-build-BUILDING = 펌웨어 빌드 중
 firmware_tool-build-SAVING = 빌드 저장 중
 firmware_tool-build-DONE = 빌드 완료
@@ -1245,7 +1152,6 @@ firmware_tool-build-ERROR = 펌웨어를 빌드할 수 없음
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 펌웨어 다운로드 중
-firmware_update-status-NEED_MANUAL_REBOOT = 트래커의 전원을 껐다 켜 주세요
 firmware_update-status-AUTHENTICATING = MCU와 연결 시도 중
 firmware_update-status-UPLOADING = 펌웨어 업로드 중
 firmware_update-status-SYNCING_WITH_MCU = MCU와 동기화 중
@@ -1305,3 +1211,6 @@ unknown_device-modal-forget = 무시할게요
 
 error_collection_modal-title = 오류를 수집해도 될까요?
 error_collection_modal-confirm = 동의해요
+
+## Tracking checklist section
+

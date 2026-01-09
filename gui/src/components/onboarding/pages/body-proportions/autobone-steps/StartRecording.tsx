@@ -63,7 +63,7 @@ export function StartRecording({
               )}
             </Typography>
             <div>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'onboarding-automatic_proportions-start_recording-description'
                 )}
@@ -76,7 +76,7 @@ export function StartRecording({
                   .split('\n')
                   .map((line, i) => (
                     <li key={i}>
-                      <Typography color="secondary">{line}</Typography>
+                      <Typography>{line}</Typography>
                     </li>
                   ))}
               </>
@@ -93,7 +93,7 @@ export function StartRecording({
               className="absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto fill-background-20"
               hidden={!paused}
             >
-              <PlayCircleIcon width={100}></PlayCircleIcon>
+              <PlayCircleIcon width={100} />
             </div>
 
             <video
@@ -106,7 +106,7 @@ export function StartRecording({
               playsInline
               controls={false}
               poster="/images/autobone-poster.webp"
-            ></video>
+            />
           </button>
         </div>
 

@@ -12,7 +12,7 @@ export function ArrowLink({
 }: {
   to: string;
   children: ReactNode;
-  state?: { SerialPort?: string };
+  state?: any;
   direction?: 'left' | 'right';
   variant?: 'flat' | 'boxed' | 'boxed-2';
 }) {
@@ -28,7 +28,7 @@ export function ArrowLink({
     };
     return classNames(
       variantsMap[variant],
-      'flex gap-2 hover:fill-background-10 hover:text-background-10 fill-background-30 text-background-30'
+      'flex gap-2 hover:fill-background-10 fill-background-30 text-background-10'
     );
   }, [variant]);
 
@@ -36,13 +36,13 @@ export function ArrowLink({
     <NavLink to={to} state={state} className={classes}>
       {direction === 'left' && (
         <div className="flex flex-col justify-center">
-          <ArrowLeftIcon></ArrowLeftIcon>
+          <ArrowLeftIcon />
         </div>
       )}
       {children}
       {direction === 'right' && (
         <div className="flex flex-col justify-center">
-          <ArrowRightIcon></ArrowRightIcon>
+          <ArrowRightIcon />
         </div>
       )}
     </NavLink>

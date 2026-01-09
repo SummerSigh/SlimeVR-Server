@@ -15,13 +15,11 @@ import {
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import classNames from 'classnames';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { log } from '@/utils/logging';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
 
 export function ResetTutorialPage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
@@ -39,9 +37,7 @@ export function ResetTutorialPage() {
         )
         .sort(
           (a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TORSO_PARTS.indexOf(a.tracker.info!.bodyPart)! -
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TORSO_PARTS.indexOf(b.tracker.info!.bodyPart)!
         ),
     [assignedTrackers]
@@ -55,9 +51,7 @@ export function ResetTutorialPage() {
         )
         .sort(
           (a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             RIGHT_LEG_PARTS.indexOf(a.tracker.info!.bodyPart)! -
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             RIGHT_LEG_PARTS.indexOf(b.tracker.info!.bodyPart)!
         ),
     [assignedTrackers]
@@ -71,9 +65,7 @@ export function ResetTutorialPage() {
         )
         .sort(
           (a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             LEFT_LEG_PARTS.indexOf(a.tracker.info!.bodyPart)! -
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             LEFT_LEG_PARTS.indexOf(b.tracker.info!.bodyPart)!
         ),
     [assignedTrackers]
@@ -125,7 +117,7 @@ export function ResetTutorialPage() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-reset_tutorial')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-reset_tutorial-explanation')}
           </Typography>
           <div className="flex">
@@ -165,7 +157,7 @@ export function ResetTutorialPage() {
               curIndex >= order.length && 'hidden'
             )}
           >
-            <Typography whitespace="whitespace-pre-line" color="secondary">
+            <Typography whitespace="whitespace-pre-line">
               {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
                 taps: tapSettings[curIndex],
               })}
@@ -173,18 +165,14 @@ export function ResetTutorialPage() {
           </div>
         </div>
         <div className="flex flex-row justify-center">
-          <BodyDisplay
-            width={isMobile ? 160 : undefined}
-            trackers={[order[curIndex]]}
-            hideUnassigned={true}
-          ></BodyDisplay>
+          <BodyDisplay trackers={[order[curIndex]]} hideUnassigned={true} />
           <div
             className={classNames(
               'self-center w-72 md-max:hidden',
               curIndex >= order.length && 'hidden'
             )}
           >
-            <Typography whitespace="whitespace-pre-line" color="secondary">
+            <Typography whitespace="whitespace-pre-line">
               {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
                 taps: tapSettings[curIndex],
               })}

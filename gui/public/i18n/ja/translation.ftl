@@ -26,6 +26,9 @@ tips-tap_setup = 追跡装置をゆっくり2回軽くタップして選択す�
 tips-turn_on_tracker = SlimeVRの公式トラッカーを使っていますか？トラッカーをPCに接続した後は<b><em>必ず電源を入れて</em></b>ください!
 tips-failed_webgl = WebGLの初期化に失敗しました。
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未設定
@@ -155,7 +158,7 @@ widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示
 
 widget-drift_compensation-clear = ドリフト補正をクリアする
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = リセットマウンティングをクリア
 
@@ -394,8 +397,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = フロアクリ�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = つま先立ちで足のマウンティングリセットを有効にします。
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 足のマウンティングリセット
 settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -446,6 +447,9 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 ## Appearance settings
 
 settings-interface-appearance = 外観
+settings-general-interface-dev_mode = 開発者モード
+settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
+settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
@@ -469,9 +473,6 @@ settings-general-interface-connected_trackers_warning = 接続されたトラッ
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = 開発者モード
-settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
@@ -486,7 +487,6 @@ settings-serial-reboot = リブート
 settings-serial-factory_reset = ファクトリーリセット
 settings-serial-factory_reset-warning-ok = 自分が何しているかを知っています。
 settings-serial-factory_reset-warning-cancel = キャンセル
-settings-serial-get_infos = 情報取得
 settings-serial-serial_select = シリアルポートを選択
 settings-serial-auto_dropdown_item = 自動
 
@@ -554,7 +554,16 @@ settings-osc-vmc-network-address = ネットワークアドレス
 settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
 
+## Common OSC settings
+
+
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu
@@ -568,11 +577,6 @@ onboarding-setup_warning-cancel = セットアップを続行する
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 戻る
-onboarding-wifi_creds = Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    トラッカーはこれらの認証情報を使ってWi-Fiに接続します。
-    現在接続している認証情報を使用してください。
 onboarding-wifi_creds-skip = Wi-Fi設定をスキップする
 onboarding-wifi_creds-submit = 実行！
 onboarding-wifi_creds-ssid =
@@ -592,13 +596,6 @@ onboarding-reset_tutorial-skip = ステップをスキップする
 
 onboarding-home = SlimeVRへようこそ
 onboarding-home-start = セットアップ開始！
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = トラッカー割り当てに戻る
-onboarding-enter_vr-title = VRに入る時間だ！
-onboarding-enter_vr-description = トラッカーを全部つけて、VRに突入せよ！
-onboarding-enter_vr-ready = 準備完了
 
 ## Setup done
 
@@ -625,10 +622,10 @@ onboarding-connect_tracker-connection_status-done = サーバーに接続され�
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] No trackers
-        [one] 1 tracker
-       *[other] { $amount } trackers
-    } connected
+        [0] No trackers connected
+        [one] 1 tracker connected
+       *[other] { $amount } trackers connected
+    }
 onboarding-connect_tracker-next = すべてのトラッカーを接続しました
 
 ## Tracker calibration tutorial
@@ -653,10 +650,10 @@ onboarding-assign_trackers-description = どのトラッカーをどこに置く
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } of { $trackers ->
-        [one] 1 tracker
-       *[other] { $trackers } trackers
-    } assigned
+    { $trackers ->
+        [one] { $assigned } of 1 tracker assigned
+       *[other] { $assigned } of { $trackers } trackers assigned
+    }
 onboarding-assign_trackers-advanced = 高度な割り当て場所の表示
 onboarding-assign_trackers-next = すべてのトラッカーを割り当てました
 
@@ -690,18 +687,13 @@ onboarding-automatic_mounting-mounting_reset-title = マウントリセット
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-preparation-step-0 = 1. 両手を横に広げて直立します。
-onboarding-automatic_mounting-preparation-step-1 = 2. リセットボタンを押し、3秒待つとリセットされます。
 onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着する
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = チュートリアルをリセットする
 onboarding-manual_proportions-title = マニュアルボディプロポーション
-onboarding-manual_proportions-precision = 精度を調整する
-onboarding-manual_proportions-auto = 自動キャリブレーション
 
 ## Tracker automatic proportions setup
 
@@ -740,10 +732,10 @@ onboarding-automatic_proportions-done-title = 体を測定して保存
 onboarding-automatic_proportions-done-description = ボディプロポーションのキャリブレーションが完了しました！
 onboarding-automatic_proportions-error_modal-confirm = 了解!
 
-## Tracker scaled proportions setup
+## User height calibration
 
 
-## Tracker scaled proportions reset
+## Stay Aligned setup
 
 
 ## Home
@@ -797,4 +789,7 @@ unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

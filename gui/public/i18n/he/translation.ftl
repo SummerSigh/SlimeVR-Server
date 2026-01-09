@@ -18,6 +18,9 @@ websocket-connection_lost = החיבור לשרת אבד. מנסה להתחבר 
 tips-find_tracker = לא בטוח איזה חיישן אתה מחזיק? נער את החיישן והתוכנה תסמן לך אותו.
 tips-do_not_move_heels = אנא וודא שהעקבים שלך לא זזות בזמן הקלטה
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = לא שויך
@@ -40,6 +43,9 @@ body_part-LEFT_HAND = יד שמאל
 body_part-LEFT_UPPER_LEG = ירך שמאל
 body_part-LEFT_LOWER_LEG = קרסול שמאל
 body_part-LEFT_FOOT = רגל שמאל
+
+## BoardType
+
 
 ## Proportions
 
@@ -99,6 +105,9 @@ widget-overlay-is_mirrored_label = הצג Overlay כהעתק
 ## Widget: Drift compensation
 
 
+## Widget: Clear Mounting calibration
+
+
 ## Widget: Developer settings
 
 widget-developer_mode = מצב מפתח
@@ -112,6 +121,9 @@ widget-developer_mode-more_info = הצג עוד מידע
 
 widget-imu_visualizer = סיבוב
 widget-imu_visualizer-rotation_preview = תצוגה מקדימה
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -212,10 +224,6 @@ settings-sidebar-serial = טרמינל סידרתי
 settings-general-steamvr = SteamVR
 settings-general-steamvr-trackers-waist = מותניים
 settings-general-steamvr-trackers-chest = חזה
-settings-general-steamvr-trackers-feet = רגל
-settings-general-steamvr-trackers-knees = ברכיים
-settings-general-steamvr-trackers-elbows = מרפקים
-settings-general-steamvr-trackers-hands = ידיים
 
 ## Tracker mechanics
 
@@ -243,7 +251,13 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = שימ�
 ## Gesture control settings (tracker tapping)
 
 
-## Interface settings
+## Appearance settings
+
+
+## Notification settings
+
+
+## Behavior settings
 
 
 ## Serial settings
@@ -262,6 +276,18 @@ settings-osc-vrchat-network-trackers-elbows = מרפקים
 ## VMC OSC settings
 
 
+## Common OSC settings
+
+
+## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 
@@ -272,9 +298,6 @@ settings-osc-vrchat-network-trackers-elbows = מרפקים
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -304,10 +327,7 @@ settings-osc-vrchat-network-trackers-elbows = מרפקים
 ## Tracker automatic mounting setup
 
 
-## Tracker proportions method choose
-
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 
 ## Tracker automatic proportions setup
@@ -322,9 +342,48 @@ onboarding-automatic_proportions-verify_results-confirm = הם נכונים
 onboarding-automatic_proportions-done-title = הגוף שלך נמדד ונשמר
 onboarding-automatic_proportions-done-description = תהליך כיול פרופורציות הגוף שלך הושלם!
 
+## User height calibration
+
+
+## Stay Aligned setup
+
+
 ## Home
 
 home-no_trackers = לא זוהו או הוקצו חיישנים
 
+## Trackers Still On notification
+
+
 ## Status system
+
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
+
+## Error collection consent modal
+
+
+## Tracking checklist section
 

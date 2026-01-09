@@ -28,7 +28,7 @@ export function ProgressBar({
           animated={animated}
           parts={parts}
           bottom={bottom}
-        ></Bar>
+        />
       ))}
     </div>
   );
@@ -53,8 +53,9 @@ export function Bar({
 }) {
   const value = useMemo(
     () => Math.min(Math.max((progress * parts) / 1 - index, 0), 1),
-    [index, progress]
+    [index, progress, parts]
   );
+
   return (
     <div
       className={classNames(
@@ -74,7 +75,7 @@ export function Bar({
           width: `${value * 100}%`,
           height: `${height}px`,
         }}
-      ></div>
+      />
     </div>
   );
 }

@@ -253,6 +253,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant())
 				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization())
+				hpm.setToggle(SkeletonConfigToggles.USE_POSITION, toggles.usePosition())
 				hpm.setToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS, toggles.enforceConstraints())
 				hpm.setToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS, toggles.correctConstraints())
 			}
@@ -368,6 +369,12 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.flatRelaxedPose.footAngleInDeg = requestConfig.flatFootAngle()
 		}
 
+		if (req.hidSettings() != null) {
+			val config = api.server.configManager.vrConfig.hidConfig
+			val requestConfig = req.hidSettings()
+			config.trackersOverHID = requestConfig.trackersOverHid()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -384,7 +391,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

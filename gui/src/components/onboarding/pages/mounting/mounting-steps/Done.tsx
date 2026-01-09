@@ -20,7 +20,7 @@ export function DoneStep({
         <Typography variant="section-title">
           {l10n.getString('onboarding-automatic_mounting-done-title')}
         </Typography>
-        <Typography color="secondary">
+        <Typography>
           {l10n.getString('onboarding-automatic_mounting-done-description')}
         </Typography>
       </div>
@@ -34,8 +34,13 @@ export function DoneStep({
         </Button>
 
         {variant === 'onboarding' && (
-          <Button variant="primary" to="/onboarding/reset-tutorial">
+          <Button variant="primary" to="/onboarding/body-proportions/scaled">
             {l10n.getString('onboarding-automatic_mounting-next')}
+          </Button>
+        )}
+        {variant === 'alone' && (
+          <Button className="flex gap-3" variant="primary" to="/">
+            {l10n.getString('onboarding-automatic_mounting-return-home')}
           </Button>
         )}
       </div>

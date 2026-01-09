@@ -9,12 +9,12 @@ import {
   ModelRatiosT,
   ModelSettingsT,
   ModelTogglesT,
-  ResetsSettingsT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
+  HIDSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -38,6 +38,11 @@ import {
   serializeStayAlignedSettings,
   deserializeStayAlignedSettings,
 } from './components/StayAlignedSettings';
+import {
+  defaultResetSettings,
+  loadResetSettings,
+  ResetSettingsForm,
+} from '@/hooks/reset-settings';
 
 export type SettingsForm = {
   trackers: {
@@ -95,14 +100,11 @@ export type SettingsForm = {
   legTweaks: {
     correctionStrength: number;
   };
-  resetsSettings: {
-    resetMountingFeet: boolean;
-    armsMountingResetMode: number;
-    yawResetSmoothTime: number;
-    saveMountingReset: boolean;
-    resetHmdPitch: boolean;
-  };
+  resetsSettings: ResetSettingsForm;
   stayAligned: StayAlignedSettingsForm;
+  hidSettings: {
+    trackersOverHID: boolean;
+  };
 };
 
 const defaultValues: SettingsForm = {
@@ -156,22 +158,15 @@ const defaultValues: SettingsForm = {
     numberTrackersOverThreshold: 1,
   },
   legTweaks: { correctionStrength: 0.3 },
-  resetsSettings: {
-    resetMountingFeet: false,
-    armsMountingResetMode: 0,
-    yawResetSmoothTime: 0.0,
-    saveMountingReset: false,
-    resetHmdPitch: false,
-  },
+  resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
+  hidSettings: { trackersOverHID: false },
 };
 
 export function GeneralSettings() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  // const { state } = useLocation();
   const { currentLocales } = useLocaleConfig();
-  // const pageRef = useRef<HTMLFormElement | null>(null);
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -287,18 +282,12 @@ export function GeneralSettings() {
 
     settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
+    const hidSettings = new HIDSettingsT();
+    hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
+    settings.hidSettings = hidSettings;
+
     if (values.resetsSettings) {
-      const resetsSettings = new ResetsSettingsT();
-      resetsSettings.resetMountingFeet =
-        values.resetsSettings.resetMountingFeet;
-      resetsSettings.armsMountingResetMode =
-        values.resetsSettings.armsMountingResetMode;
-      resetsSettings.yawResetSmoothTime =
-        values.resetsSettings.yawResetSmoothTime;
-      resetsSettings.saveMountingReset =
-        values.resetsSettings.saveMountingReset;
-      resetsSettings.resetHmdPitch = values.resetsSettings.resetHmdPitch;
-      settings.resetsSettings = resetsSettings;
+      settings.resetsSettings = loadResetSettings(values.resetsSettings);
     }
 
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
@@ -412,6 +401,12 @@ export function GeneralSettings() {
       );
     }
 
+    if (settings.hidSettings) {
+      formData.hidSettings = {
+        trackersOverHID: settings.hidSettings.trackersOverHid,
+      };
+    }
+
     reset({ ...getValues(), ...formData });
   });
 
@@ -454,12 +449,12 @@ export function GeneralSettings() {
         }}
       />
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
+        <SettingsPagePaneLayout icon={<SteamIcon />} id="steamvr">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-steamvr')}
             </Typography>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-general-steamvr-subtitle')}
             </Typography>
             <div className="flex flex-col py-2">
@@ -467,13 +462,11 @@ export function GeneralSettings() {
                 .getString('settings-general-steamvr-description')
                 .split('\n')
                 .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
+                  <Typography key={i}>{line}</Typography>
                 ))}
             </div>
-            <div className="flex flex-col pt-4"></div>
-            <Typography bold>
+            <div className="flex flex-col pt-4" />
+            <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-steamvr-trackers-tracker_toggling'
               )}
@@ -485,9 +478,7 @@ export function GeneralSettings() {
                 )
                 .split('\n')
                 .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
+                  <Typography key={i}>{line}</Typography>
                 ))}
             </div>
             <CheckBox
@@ -499,7 +490,7 @@ export function GeneralSettings() {
                 'settings-general-steamvr-trackers-tracker_toggling-label'
               )}
             />
-            <div className="flex flex-col pt-4"></div>
+            <div className="flex flex-col pt-4" />
             <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
@@ -603,12 +594,12 @@ export function GeneralSettings() {
           </>
         </SettingsPagePaneLayout>
         <StayAlignedSettings values={getValues()} control={control} />
-        <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="mechanics">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-tracker_mechanics')}
             </Typography>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-general-tracker_mechanics-filtering')}
             </Typography>
             <div className="flex flex-col pt-2 pb-4">
@@ -618,9 +609,7 @@ export function GeneralSettings() {
                 )
                 .split('\n')
                 .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
+                  <Typography key={i}>{line}</Typography>
                 ))}
             </div>
             <Typography>
@@ -639,7 +628,7 @@ export function GeneralSettings() {
                   'settings-general-tracker_mechanics-filtering-type-none-description'
                 )}
                 value={FilteringType.NONE.toString()}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="filtering.type"
@@ -650,7 +639,7 @@ export function GeneralSettings() {
                   'settings-general-tracker_mechanics-filtering-type-smoothing-description'
                 )}
                 value={FilteringType.SMOOTHING.toString()}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="filtering.type"
@@ -661,7 +650,7 @@ export function GeneralSettings() {
                   'settings-general-tracker_mechanics-filtering-type-prediction-description'
                 )}
                 value={FilteringType.PREDICTION.toString()}
-              ></Radio>
+              />
             </div>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
@@ -690,16 +679,16 @@ export function GeneralSettings() {
               />
             </div>
             <div className="flex flex-col pt-5 pb-3">
-              <Typography bold>
+              <Typography variant="section-title">
                 {l10n.getString(
                   'settings-general-tracker_mechanics-save_mounting_reset'
                 )}
               </Typography>
               <Localized
                 id="settings-general-tracker_mechanics-save_mounting_reset-description"
-                elems={{ b: <b></b> }}
+                elems={{ b: <b /> }}
               >
-                <Typography color="secondary"></Typography>
+                <Typography />
               </Localized>
             </div>
             <CheckBox
@@ -715,29 +704,48 @@ export function GeneralSettings() {
               settingType="general"
               id="mechanics-magnetometer"
             />
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-trackers_over_usb'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-trackers_over_usb-description"
+                elems={{ b: <b /> }}
+              >
+                <Typography />
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="hidSettings.trackersOverHID"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
-        <SettingsPagePaneLayout
-          icon={<WrenchIcon></WrenchIcon>}
-          id="fksettings"
-        >
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="fksettings">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-fk_settings')}
             </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              <Typography bold>
+            <div className="flex flex-col pt-2 pb-4 gap-2">
+              <Typography variant="section-title">
                 {l10n.getString(
                   'settings-general-fk_settings-leg_tweak-skating_correction'
                 )}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-fk_settings-leg_tweak-skating_correction-description'
                 )}
               </Typography>
             </div>
-            <div className="grid sm:grid-cols-1 gap-3 pb-4">
+            <div className="grid sm:grid-cols-1 gap-2 pb-4">
               <CheckBox
                 variant="toggle"
                 outlined
@@ -761,18 +769,18 @@ export function GeneralSettings() {
             </div>
 
             <div className="flex flex-col pt-2 pb-2">
-              <Typography bold>
+              <Typography variant="section-title">
                 {l10n.getString('settings-general-fk_settings-leg_fk')}
               </Typography>
             </div>
             <div className="grid sm:grid-cols-1 gap-3 pb-3">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-fk_settings-leg_tweak-floor_clip-description'
                 )}
               </Typography>
             </div>
-            <div className="grid sm:grid-cols-1 gap-3 pb-3">
+            <div className="grid sm:grid-cols-1 gap-2 pb-3">
               <CheckBox
                 variant="toggle"
                 outlined
@@ -784,7 +792,7 @@ export function GeneralSettings() {
               />
             </div>
             <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-fk_settings-leg_tweak-foot_plant-description'
                 )}
@@ -802,7 +810,7 @@ export function GeneralSettings() {
               />
             </div>
             <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-fk_settings-leg_tweak-toe_snap-description'
                 )}
@@ -821,10 +829,10 @@ export function GeneralSettings() {
             </div>
 
             <div className="flex flex-col pt-2 pb-3">
-              <Typography bold>
+              <Typography variant="section-title">
                 {l10n.getString('settings-general-fk_settings-arm_fk')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-fk_settings-arm_fk-description'
                 )}
@@ -843,110 +851,114 @@ export function GeneralSettings() {
             </div>
 
             <div className="flex flex-col pt-2">
-              <Typography bold>
+              <Typography variant="section-title">
                 {l10n.getString('settings-general-fk_settings-reset_settings')}
               </Typography>
             </div>
             <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-1 gap-3 pb-3">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="resetsSettings.resetHmdPitch"
-                label={l10n.getString(
-                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
-                )}
-              />
-            </div>
-            <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-1 gap-3 pb-3">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="resetsSettings.resetMountingFeet"
-                label={l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
-                )}
-              />
-            </div>
-
-            <Typography color="secondary">
-              {l10n.getString(
-                'settings-general-fk_settings-arm_fk-reset_mode-description'
-              )}
-            </Typography>
-            <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
-              <Radio
-                control={control}
-                name="resetsSettings.armsMountingResetMode"
-                label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-back'
-                )}
-                description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-back-description'
-                )}
-                value={'0'}
-              ></Radio>
-              <Radio
-                control={control}
-                name="resetsSettings.armsMountingResetMode"
-                label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-forward'
-                )}
-                description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-forward-description'
-                )}
-                value={'1'}
-              ></Radio>
-              <Radio
-                control={control}
-                name="resetsSettings.armsMountingResetMode"
-                label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_up'
-                )}
-                description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_up-description'
-                )}
-                value={'2'}
-              ></Radio>
-              <Radio
-                control={control}
-                name="resetsSettings.armsMountingResetMode"
-                label={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_down'
-                )}
-                description={l10n.getString(
-                  'settings-general-fk_settings-arm_fk-tpose_down-description'
-                )}
-                value={'3'}
-              ></Radio>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-2">
+                  <Typography>
+                    {l10n.getString(
+                      'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
+                    )}
+                  </Typography>
+                  <CheckBox
+                    variant="toggle"
+                    outlined
+                    control={control}
+                    name="resetsSettings.resetHmdPitch"
+                    label={l10n.getString(
+                      'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col gap-2 justify-end">
+                  <Typography>
+                    {l10n.getString(
+                      'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
+                    )}
+                  </Typography>
+                  <CheckBox
+                    variant="toggle"
+                    outlined
+                    control={control}
+                    name="resetsSettings.resetMountingFeet"
+                    label={l10n.getString(
+                      'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+                    )}
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-col pt-2 pb-3">
-              <Typography bold>
+            <div>
+              <Typography>
+                {l10n.getString(
+                  'settings-general-fk_settings-arm_fk-reset_mode-description'
+                )}
+              </Typography>
+              <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
+                <Radio
+                  control={control}
+                  name="resetsSettings.armsMountingResetMode"
+                  label={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-back'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-back-description'
+                  )}
+                  value={'0'}
+                />
+                <Radio
+                  control={control}
+                  name="resetsSettings.armsMountingResetMode"
+                  label={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-forward'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-forward-description'
+                  )}
+                  value={'1'}
+                />
+                <Radio
+                  control={control}
+                  name="resetsSettings.armsMountingResetMode"
+                  label={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-tpose_up'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-tpose_up-description'
+                  )}
+                  value={'2'}
+                />
+                <Radio
+                  control={control}
+                  name="resetsSettings.armsMountingResetMode"
+                  label={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-tpose_down'
+                  )}
+                  description={l10n.getString(
+                    'settings-general-fk_settings-arm_fk-tpose_down-description'
+                  )}
+                  value={'3'}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col pt-2 pb-1">
+              <Typography variant="section-title">
                 {l10n.getString(
                   'settings-general-fk_settings-enforce_joint_constraints'
                 )}
               </Typography>
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
-                )}
-              </Typography>
+              <div className="pt-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
+                  )}
+                </Typography>
+              </div>
             </div>
             <div className="grid sm:grid-cols-1 pb-3">
               <CheckBox
@@ -960,15 +972,37 @@ export function GeneralSettings() {
               />
             </div>
 
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography bold>
+                {l10n.getString('settings-general-fk_settings-ik')}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-ik-use_position-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.usePosition"
+                label={l10n.getString(
+                  'settings-general-fk_settings-ik-use_position'
+                )}
+              />
+            </div>
+
             {config?.debug && (
               <>
                 <div className="flex flex-col pt-2 pb-3">
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString(
                       'settings-general-fk_settings-skeleton_settings-toggles'
                     )}
                   </Typography>
-                  <Typography color="secondary">
+                  <Typography>
                     {l10n.getString(
                       'settings-general-fk_settings-skeleton_settings-description'
                     )}
@@ -1003,14 +1037,14 @@ export function GeneralSettings() {
                     )}
                   />
                 </div>
-                <div className="flex flex-col pt-2 pb-3">
-                  <div className="flex flex-col pt-2 pb-3">
-                    <Typography bold>
+                <div className="flex flex-col">
+                  <div className="flex flex-col pt-2 pb-3 gap-2">
+                    <Typography variant="section-title">
                       {l10n.getString(
                         'settings-general-fk_settings-skeleton_settings-ratios'
                       )}
                     </Typography>
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-general-fk_settings-skeleton_settings-ratios-description'
                       )}
@@ -1112,12 +1146,12 @@ export function GeneralSettings() {
                 </div>
 
                 <div className="flex flex-col pt-2 pb-3">
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString(
                       'settings-general-fk_settings-self_localization-title'
                     )}
                   </Typography>
-                  <Typography color="secondary">
+                  <Typography>
                     {l10n.getString(
                       'settings-general-fk_settings-self_localization-description'
                     )}
@@ -1139,19 +1173,17 @@ export function GeneralSettings() {
           </>
         </SettingsPagePaneLayout>
 
-        <SettingsPagePaneLayout
-          icon={<WrenchIcon></WrenchIcon>}
-          id="gestureControl"
-        >
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="gestureControl">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-gesture_control')}
             </Typography>
-            <Typography bold>
-              {l10n.getString('settings-general-gesture_control-subtitle')}
-            </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              <Typography color="secondary">
+
+            <div className="flex flex-col pt-2 pb-4 gap-2">
+              <Typography variant="section-title">
+                {l10n.getString('settings-general-gesture_control-subtitle')}
+              </Typography>
+              <Typography>
                 {l10n.getString('settings-general-gesture_control-description')}
               </Typography>
             </div>
@@ -1267,12 +1299,12 @@ export function GeneralSettings() {
               />
             </div>
             <div className="grid sm:grid-cols-1 gap-2 pt-2">
-              <Typography bold>
+              <Typography variant="section-title">
                 {l10n.getString(
                   'settings-general-gesture_control-numberTrackersOverThreshold'
                 )}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-gesture_control-numberTrackersOverThreshold-description'
                 )}

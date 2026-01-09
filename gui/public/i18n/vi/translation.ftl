@@ -31,6 +31,9 @@ tips-tap_setup = Bạn có thể từ từ nhấn vào 2 lần trình theo dõi 
 tips-turn_on_tracker = Sử dụng thiết bị SlimeVR chính thức? Hãy nhớ <b><em>bật trình theo dõi của bạn</em></b> sau khi kết nối thiết bị với máy tính!
 tips-failed_webgl = Không thể khởi tạo WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Chưa được gán
@@ -136,7 +139,7 @@ widget-overlay-is_mirrored_label = Xem overlay trong gương
 
 widget-drift_compensation-clear = Xóa sai số
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Đặt lại hướng gắn tracker
 
@@ -398,8 +401,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Ngăn xuyên sà
 settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Đặt lại hướng gắn tracker bàn chân bằng cách nhón chân.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Đặt lại hướng gắn tracker bàn chân
 settings-general-fk_settings-arm_fk = Track cánh tay
 settings-general-fk_settings-arm_fk-description = Thay đổi cách cánh tay được track
 settings-general-fk_settings-arm_fk-force_arms = Lấy dữ liệu cánh tay từ kính
@@ -495,9 +496,6 @@ settings-general-interface-connected_trackers_warning-label = Cảnh báo thiế
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Chế độ nhà phát triển
-settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
-settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
 settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
@@ -527,7 +525,6 @@ settings-serial-factory_reset-warning =
     Đặt lại bao gồm tất cả các cài đặt Wi-Fi và hiệu chuẩn (Calibrate) <b>sẽ bị mất!</b>
 settings-serial-factory_reset-warning-ok = Tôi biết mình đang làm gì
 settings-serial-factory_reset-warning-cancel = Hủy
-settings-serial-get_infos = Lấy thông tin
 settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
@@ -622,6 +619,9 @@ settings-osc-vmc-mirror_tracking = Phản chiếu ngược theo dõi cơ thể
 settings-osc-vmc-mirror_tracking-description = Phản chiếu theo dõi theo chiều ngang.
 settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ thể
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Cài đặt mở rộng
@@ -630,6 +630,12 @@ settings-utils-advanced-reset-all-label = Đặt lại tất cả
 settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
 settings-utils-advanced-open_data-label = Mở thư mục
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 
@@ -646,11 +652,6 @@ onboarding-setup_warning-cancel = Tiếp tục thiết lập
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Quay lại giới thiệu
-onboarding-wifi_creds = Nhập thông tin Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Tracker sẽ sử dụng thông tin này để kết nối đến mạng
-    Hãy nhập thông tin mạng Wi-Fi bạn đang dùng
 onboarding-wifi_creds-skip = Bỏ qua cài đặt Wi-Fi
 onboarding-wifi_creds-submit = Gửi
 onboarding-wifi_creds-ssid =
@@ -690,13 +691,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Chào mừng bạn đến với SlimeVR!
 onboarding-home-start = Bắt đầu thiết lập!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Quay lại gán tracker
-onboarding-enter_vr-title = Chuẩn bị cho việc cân chỉnh trong VR
-onboarding-enter_vr-description = Đeo tất cả tracker và vào VR trước khi tiếp tục
-onboarding-enter_vr-ready = Sẵn sàng
-
 ## Setup done
 
 onboarding-done-title = Hoàn thành!
@@ -726,10 +720,10 @@ onboarding-connect_tracker-connection_status-done = Đã kết nối đến máy
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] Không có tracker
-        [one] 1 tracker
-       *[other] { $amount } tracker
-    } đã giao
+        [0] Không có tracker đã giao
+        [one] 1 tracker đã giao
+       *[other] { $amount } tracker đã giao
+    }
 onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 
 ## Tracker calibration tutorial
@@ -762,10 +756,10 @@ onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán trac
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } trên { $trackers ->
-        [one] 1 tracker
-       *[other] { $trackers } tracker
-    } đã giao
+    { $trackers ->
+        [one] { $assigned } trên 1 tracker đã giao
+       *[other] { $assigned } trên { $trackers } tracker đã giao
+    }
 onboarding-assign_trackers-advanced = Xem thêm vị trí đặt
 onboarding-assign_trackers-next = Hoàn thành
 onboarding-assign_trackers-mirror_view = Xem hình phản chiếu
@@ -870,7 +864,7 @@ onboarding-choose_mounting-manual_mounting-label-v2 = Có thể không đủ ch�
 onboarding-choose_mounting-manual_mounting-description = Điều này sẽ cho phép bạn chọn hướng lắp theo cách thủ công cho từng thiết bị
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
-    Bạn có chắc chắn muốn 
+    Bạn có chắc chắn muốn
     đo hướng quay tự động?
 onboarding-choose_mounting-manual_modal-description = <b>Hiệu chuẩn lắp thủ công được khuyến nghị cho người dùng mới</b>, vì các tư thế của hiệu chuẩn lắp tự động có thể khó thực hiện ngay trước và có thể cần một số thực hành.
 onboarding-choose_mounting-manual_modal-confirm = Tôi chắc chắn về những gì tôi đang làm
@@ -905,7 +899,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
 
 ## Tracker automatic proportions setup
@@ -964,10 +957,7 @@ onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
 onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup
@@ -1041,4 +1031,7 @@ unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

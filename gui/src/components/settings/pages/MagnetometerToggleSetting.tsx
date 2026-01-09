@@ -95,19 +95,16 @@ export function MagnetometerToggleSetting({
   return settingType === 'general' ? (
     <>
       <div className="flex flex-col pt-5 pb-3" id={id}>
-        <Typography bold>
+        <Typography variant="section-title">
           {l10n.getString(
             'settings-general-tracker_mechanics-use_mag_on_all_trackers'
           )}
         </Typography>
         <Localized
           id="settings-general-tracker_mechanics-use_mag_on_all_trackers-description"
-          elems={{ b: <b></b> }}
+          elems={{ b: <b /> }}
         >
-          <Typography
-            color="secondary"
-            whitespace="whitespace-pre-line"
-          ></Typography>
+          <Typography whitespace="whitespace-pre-line" />
         </Localized>
       </div>
       <CheckBox
@@ -129,20 +126,17 @@ export function MagnetometerToggleSetting({
       <Localized
         id="tracker-settings-use_mag-description"
         elems={{
-          b: <b></b>,
+          b: <b />,
           magSetting: (
             <Link
               to="/settings/trackers"
               state={{ scrollTo: 'mechanics-magnetometer' }}
               className="underline"
-            ></Link>
+            />
           ),
         }}
       >
-        <Typography
-          color="secondary"
-          whitespace="whitespace-pre-line"
-        ></Typography>
+        <Typography whitespace="whitespace-pre-line" />
       </Localized>
       <div className="flex">
         <CheckBox
